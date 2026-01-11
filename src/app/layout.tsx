@@ -1,9 +1,9 @@
 import Navbar from '@/components/shared/Navbar'
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Cousine, Crimson_Pro } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
-import { cn } from '@/lib/utils'
 
 const crimsonPro = Crimson_Pro({
   subsets: ['latin'],
@@ -31,12 +31,12 @@ export default function RootLayout({
   return (
     <html lang='en' className={cn(crimsonPro.variable, cousine.variable)}>
       <body
-        className='min-h-dvh bg-neutral-950 text-white antialiased'
+        className='flex h-screen flex-col overflow-hidden bg-neutral-950 text-white antialiased'
         suppressHydrationWarning
       >
         <Providers>
           <Navbar />
-          {children}
+          <div className='flex-1'>{children}</div>
         </Providers>
       </body>
     </html>
