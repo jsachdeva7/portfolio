@@ -1,10 +1,9 @@
+import Work from '@/components/work/Work'
+
 export default function WorkPage() {
   return (
-    <main className='flex h-full w-full items-center justify-center'>
-      <div className='text-center'>
-        <h1 className='font-primary text-4xl'>Work</h1>
-        <p className='font-primary mt-4 text-neutral-400'>Coming soon...</p>
-      </div>
+    <main className='flex h-full w-full'>
+      <Work />
     </main>
   )
 }

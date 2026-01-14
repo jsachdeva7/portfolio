@@ -1,7 +1,7 @@
 import Navbar from '@/components/shared/Navbar'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Cousine, Crimson_Pro } from 'next/font/google'
+import { Cousine, Crimson_Pro, Be_Vietnam_Pro } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -18,6 +18,13 @@ const cousine = Cousine({
   display: 'swap'
 })
 
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-be-vietnam-pro',
+  display: 'swap'
+})
+
 export const metadata: Metadata = {
   title: 'Jagat Sachdeva Portfolio',
   description: 'Product designer and developer.'
@@ -29,14 +36,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang='en' className={cn(crimsonPro.variable, cousine.variable)}>
+    <html
+      lang='en'
+      className={cn(
+        crimsonPro.variable,
+        cousine.variable,
+        beVietnamPro.variable
+      )}
+    >
       <body
-        className='flex h-screen flex-col overflow-hidden bg-neutral-950 text-white antialiased'
+        className='flex h-screen flex-col bg-neutral-950 text-white antialiased'
         suppressHydrationWarning
       >
         <Providers>
           <Navbar />
-          <div className='flex-1'>{children}</div>
+          <div className='flex-1 p-16'>{children}</div>
         </Providers>
       </body>
     </html>
