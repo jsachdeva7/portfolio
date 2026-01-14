@@ -10,7 +10,8 @@ export default function Home() {
         <p className='font-primary text-4xl'>
           I&apos;m a developer,{' '}
           <span className='text-neutral-400'>(aspiring)</span> designer, and
-          damn proud <span className='text-yellow-100'>Yellow Jacket</span> 🐝
+          proud Georgia Tech <span className='text-white'>Yellow Jacket</span>{' '}
+          🐝
         </p>
       </div>
       <div className='absolute top-[-3em] right-0 p-16'>

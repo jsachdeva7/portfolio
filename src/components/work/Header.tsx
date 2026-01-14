@@ -10,7 +10,7 @@ export default function Header() {
   ]
 
   return (
-    <div className='flex h-auto w-full flex-row items-start'>
+    <div className='flex h-auto w-full flex-row items-end gap-4'>
       <div className='h-auto w-1/2 pr-20'>
         <h1 className='font-primary text-4xl'>
           Formal work or a cheeky build, I obsess over the user, break things{' '}
@@ -18,10 +18,13 @@ export default function Header() {
           most fun watching pixels come to life.
         </h1>
       </div>
-      <div className='h-auto w-auto pt-2 pl-20'>
-        <div className='font-secondary grid grid-cols-[auto_auto_auto] gap-x-12 gap-y-1'>
+      <div className='h-auto w-auto pt-2'>
+        <div className='font-secondary grid grid-cols-[auto_auto_auto] gap-x-14 gap-y-1'>
           {workExperience.flatMap((work, index) => [
-            <div key={`year-${index}`} className='text-neutral-400'>
+            <div
+              key={`year-${index}`}
+              className='font-tertiary text-neutral-400'
+            >
               {work.year}
             </div>,
             <div key={`company-${index}`} className='text-white'>
