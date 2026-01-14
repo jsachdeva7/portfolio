@@ -1,38 +1,50 @@
 const projects = [
   {
-    title: 'Project 1',
-    description: 'This is a project description',
-    detail: 'Project Detail',
+    title: 'Roboligent',
+    description: 'A platform for robot orchestration',
+    detail: 'Internship 2025',
     thumbnail: 'https://via.placeholder.com/150'
   },
   {
-    title: 'Project 2',
-    description: 'This is a project description',
-    detail: 'Project Detail',
+    title: 'Soar',
+    description: 'Small business content creation tool',
+    detail: 'Shipped 2025',
     thumbnail: 'https://via.placeholder.com/150'
   },
   {
-    title: 'Project 3',
-    description: 'This is a project description',
-    detail: 'Project Detail',
+    title: 'CheckIn',
+    description: 'A better way to keep in touch',
+    detail: 'Shipping soon',
     thumbnail: 'https://via.placeholder.com/150'
   },
   {
-    title: 'Project 4',
-    description: 'This is a project description',
-    detail: 'Project Detail',
+    title: 'Styleis.tech',
+    description: 'Let your clothes continue to live on',
+    detail: 'HackTX 2025',
     thumbnail: 'https://via.placeholder.com/150'
   },
   {
-    title: 'Project 5',
-    description: 'This is a project description',
-    detail: 'Project Detail',
+    title: '/tmp',
+    description: 'Seamlessly move context from IDE to web',
+    detail: 'Shipped 2025',
     thumbnail: 'https://via.placeholder.com/150'
   },
   {
-    title: 'Project 6',
-    description: 'This is a project description',
-    detail: 'Project Detail',
+    title: 'Resistor Sorter',
+    description: "An ECE lab tech's dream",
+    detail: 'RoboTech 2025',
+    thumbnail: 'https://via.placeholder.com/150'
+  },
+  {
+    title: 'Autonomous Car',
+    description: 'Autonomous car in a simulated city',
+    detail: 'Shipped 2025',
+    thumbnail: 'https://via.placeholder.com/150'
+  },
+  {
+    title: 'Gravity Visualizer',
+    description: 'See how gravitational quantities change',
+    detail: 'Shipped 2024',
     thumbnail: 'https://via.placeholder.com/150'
   }
 ]

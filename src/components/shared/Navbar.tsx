@@ -13,7 +13,7 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className='font-tertiary sticky top-0 z-50 flex w-full flex-row items-center justify-between bg-neutral-950 px-8 py-4 text-base font-medium'>
+    <nav className='font-tertiary sticky top-0 z-50 flex w-full flex-row items-center justify-between border-b border-white/5 bg-neutral-950/60 px-8 py-4 text-base font-medium backdrop-blur-lg'>
       <div className='flex flex-row items-center gap-4'>
         <div>JAGAT SACHDEVA</div>
         <div className='text-[#A1A1A1]'>PRODUCT ENGINEER</div>

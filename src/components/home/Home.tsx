@@ -1,17 +1,15 @@
-import deltaU from '@/assets/deltaU.jpg'
-import puertoRico from '@/assets/puertoRico.jpg'
 import Image from 'next/image'
+import deltaU from './assets/deltaU.jpg'
+import puertoRico from './assets/puertoRico.jpg'
 
 export default function Home() {
   return (
     <div className='relative h-full w-full'>
-      <div className='absolute bottom-0 left-0 flex flex-col gap-6'>
-        <h1 className='font-primary mb-2 text-7xl'>Hi, I&apos;m Jagat.</h1>
-        <p className='font-primary text-4xl'>
-          I&apos;m a developer,{' '}
-          <span className='text-neutral-400'>(aspiring)</span> designer, and
-          proud Georgia Tech <span className='text-white'>Yellow Jacket</span>{' '}
-          🐝
+      <div className='absolute bottom-0 left-0 flex w-1/2 flex-col gap-6'>
+        <h1 className='font-primary mb-2 text-7xl'>Hey, I&apos;m Jagat.</h1>
+        <p className='font-primary text-3xl'>
+          I&apos;m a full stack developer, aspiring designer, and proud GT
+          Yellow Jacket!
         </p>
       </div>
       <div className='absolute top-[-3em] right-0 p-16'>
@@ -23,7 +21,7 @@ export default function Home() {
               alt='Puerto Rico'
               width={280}
               height={350}
-              className='rounded-2xl shadow-2xl'
+              className='rounded-2xl shadow-2xl saturate-[0.6] hover:saturate-[1]'
               priority
             />
           </div>
@@ -34,7 +32,7 @@ export default function Home() {
               alt='Delta U'
               width={220}
               height={280}
-              className='rounded-2xl shadow-2xl'
+              className='rounded-2xl shadow-2xl saturate-[0.6] hover:saturate-[1]'
             />
           </div>
         </div>
