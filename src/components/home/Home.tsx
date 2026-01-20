@@ -37,11 +37,10 @@ export default function Home() {
           <br />
           Recently, I was a{' '}
           <span className='text-white'>SWE + Product Intern</span> at an
-          Austin-based robotics startup and{' '}
+          Austin-based robotics startup and a{' '}
           <span className='text-white'>Georgia Tech CREATE-X Founder</span>.
           <br />
-          <br />
-          Feel free to reach out at{' '}
+          <br />I hope you enjoy your time here! Feel free to reach out at{' '}
           <span className='inline-flex items-center gap-2 text-white'>
             jagatsachdeva@gmail.com
             <button
