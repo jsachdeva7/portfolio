@@ -1,6 +1,7 @@
 interface ProjectArticleHeaderProps {
   description: string
   thumbnail: string
+  caption: string
   highlights: string[]
   designSkills: string[]
   devSkills: string[]
@@ -23,6 +24,7 @@ function renderHighlightedText(text: string) {
 export default function ProjectArticleHeader({
   description,
   thumbnail,
+  caption,
   highlights,
   designSkills,
   devSkills
@@ -36,11 +38,8 @@ export default function ProjectArticleHeader({
       <div className='mb-5 aspect-[800/520] w-full bg-neutral-800' />
 
       {/* Caption */}
-      <div className='font-secondary mb-14 text-neutral-400'>
-        Lorem ipsum dolor sit amet,{' '}
-        <span className='text-white'>consectetur adipiscing</span> elit. Sed do
-        eiusmod tempor incididunt ut{' '}
-        <span className='text-white'>labore et dolore</span> magna aliqua.
+      <div className='font-secondary mb-14 text-lg text-neutral-400'>
+        {renderHighlightedText(caption)}
       </div>
 
       {/* Highlights and Skills */}

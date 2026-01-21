@@ -29,9 +29,9 @@ export default function Home() {
         <h1 className='font-primary mb-5 text-7xl'>
           Hey, I&apos;m Jagat<span className='text-[4.25rem]'>!</span>
         </h1>
-        <p className='font-secondary text-xl text-neutral-400'>
+        <p className='font-secondary mb-3 text-xl text-neutral-400'>
           I'm a customer-first{' '}
-          <span className='text-white'>developer designer</span> and end to end{' '}
+          <span className='text-white'>developer designer</span> and end-to-end{' '}
           <span className='text-white'>product builder</span>.
           <br />
           <br />

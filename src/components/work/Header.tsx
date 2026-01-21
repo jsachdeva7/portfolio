@@ -3,7 +3,7 @@ export default function Header() {
     {
       year: '2025',
       company: 'Roboligent',
-      position: 'Software Engineer Intern'
+      position: 'Software Engineering + Product Intern'
     },
     { year: '2025', company: 'Soar', position: 'Founder & CREATE-X Fellow' },
     { year: '2024', company: 'Hack4Impact GT', position: 'Full Stack Engineer' }

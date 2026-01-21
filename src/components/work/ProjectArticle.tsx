@@ -24,6 +24,7 @@ export default function ProjectArticle({
         <ProjectArticleHeader
           description={project.description}
           thumbnail={project.thumbnail}
+          caption={project.caption}
           highlights={project.highlights}
           designSkills={project.designSkills}
           devSkills={project.devSkills}
