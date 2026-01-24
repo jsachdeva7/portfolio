@@ -35,7 +35,7 @@ export default function Home() {
           <span className='text-white'>product builder</span>.
           <br />
           <br />
-          Recently, I was a{' '}
+          Most recently, I was a{' '}
           <span className='text-white'>SWE + Product Intern</span> at an
           Austin-based robotics startup and a{' '}
           <span className='text-white'>Georgia Tech CREATE-X Founder</span>.

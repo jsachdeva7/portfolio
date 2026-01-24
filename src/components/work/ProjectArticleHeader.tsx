@@ -67,19 +67,23 @@ export default function ProjectArticleHeader({
           <h2 className='font-tertiary text-neutral-400 uppercase'>Skills</h2>
           <div className='flex flex-col gap-4'>
             {/* Design Skills */}
-            <div className='grid grid-cols-[100px_1fr] gap-4'>
-              <span className='font-secondary text-sm text-neutral-400'>
-                Design
-              </span>
-              <span className='font-secondary text-sm text-white'>
-                {designSkills.map((skill, index) => (
-                  <span key={index}>
-                    {index > 0 && <span className='text-neutral-400'>, </span>}
-                    {skill}
-                  </span>
-                ))}
-              </span>
-            </div>
+            {designSkills.length > 0 && (
+              <div className='grid grid-cols-[100px_1fr] gap-4'>
+                <span className='font-secondary text-sm text-neutral-400'>
+                  Design
+                </span>
+                <span className='font-secondary text-sm text-white'>
+                  {designSkills.map((skill, index) => (
+                    <span key={index}>
+                      {index > 0 && (
+                        <span className='text-neutral-400'>, </span>
+                      )}
+                      {skill}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            )}
             {/* Development Skills */}
             <div className='grid grid-cols-[100px_1fr] gap-4'>
               <span className='font-secondary text-sm text-neutral-400'>

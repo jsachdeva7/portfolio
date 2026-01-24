@@ -1,3 +1,7 @@
+import CheckIn from './assets/CheckIn.png'
+import RMS from './assets/RMS.svg'
+import Stylistic from './assets/Stylistic.png'
+
 export interface Project {
   title: string
   description: string
@@ -7,6 +11,50 @@ export interface Project {
   devSkills: string[]
   designSkills: string[]
   highlights: string[]
+}
+
+interface ThumbnailProps {
+  project: Project
+}
+
+function Thumbnail({ project }: ThumbnailProps) {
+  if (project.title === 'Roboligent') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center bg-neutral-800'>
+        <img
+          src={RMS.src}
+          alt='Robot Management System'
+          className='h-auto w-full'
+        />
+      </div>
+    )
+  }
+
+  if (project.title === 'CheckIn') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-neutral-800 p-6'>
+        <img
+          src={CheckIn.src}
+          alt='CheckIn'
+          className='h-full w-auto max-w-full object-contain'
+        />
+      </div>
+    )
+  }
+
+  if (project.title === 'Stylistic') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-neutral-800 p-6'>
+        <img
+          src={Stylistic.src}
+          alt='Stylistic'
+          className='h-full w-auto max-w-full object-contain'
+        />
+      </div>
+    )
+  }
+
+  return <div className='aspect-square w-full bg-neutral-800' />
 }
 
 export const projects: Project[] = [
@@ -78,54 +126,82 @@ export const projects: Project[] = [
     ]
   },
   {
-    title: 'Styleis.tech',
+    title: 'Stylistic',
     description: 'Let your clothes continue to live on',
     detail: 'HackTX 2025',
     thumbnail: 'https://via.placeholder.com/150',
-    caption: '',
-    devSkills: ['React, Flask, Supabase, Render'],
+    caption:
+      "{{Built in 24 hours}} at {{HackTX 2025}} with three teammates, {{Stylistic}} is a mobile app that helps you understand which clothes in your closet {{you actually use}}, and which {{you're just hoarding}}.",
+    devSkills: ['React', 'Flask', 'Supabase', 'Render'],
     designSkills: ['Rapid Prototyping', 'Low Fidelity Prototyping'],
-    highlights: []
+    highlights: [
+      'Log daily outfits in seconds and build a {{true picture}} of what you {{actually wear}}',
+      '{{Reality-check donation recommendations}} that you approve or deny as you scroll',
+      'A ready-to-go donation basket with {{nearby drop-off locations}} for an {{easy donation run}}'
+    ]
   },
   {
     title: '/tmp',
     description: 'Seamlessly move context from IDE to web',
     detail: 'Shipped 2025',
     thumbnail: 'https://via.placeholder.com/150',
-    caption: '',
-    devSkills: [],
-    designSkills: [],
-    highlights: []
+    caption:
+      'Ever {{waste a ton of time}} moving code from your {{IDE}} into {{ChatGPT}}/{{Claude}}? {{/tmp}} is a lightweight {{React}} + {{Electron}} widget that lets you {{drag in the files you need}} and generate a clean, GPT-ready {{markdown context package}}—or {{zip}}—in one click.',
+    devSkills: ['React', 'Electron'],
+    designSkills: ['Figma', 'Rapid Prototyping', 'Low Fidelity Prototyping'],
+    highlights: [
+      'Drag-and-drop files into an {{ephemeral mini-filesystem}} that lives in the corner of your screen',
+      'Recreate coding context with a {{GPT-ready markdown bundle}} of {{select folders + file contents}}',
+      '{{One-click zip export}} when the context is too large to paste, for fast upload'
+    ]
   },
   {
     title: 'Resistor Sorter',
     description: "An ECE lab tech's dream",
     detail: 'RoboTech 2025',
     thumbnail: 'https://via.placeholder.com/150',
-    caption: '',
-    devSkills: [],
-    designSkills: [],
-    highlights: []
+    caption:
+      'At {{RoboTech 2025}}, my two teammates (staff at the ECE Makerspace) and I built a {{Resistor Sorter}} in {{36 hours}}—a robot that measures resistor values with {{Arduino-based ohmmeter circuitry}} and {{automatically sorts them}}, eliminating the hassle of doing it by hand.',
+    devSkills: ['Arduino', 'Python', 'Raspberry Pi'],
+    designSkills: [
+      'Customer Interviews',
+      'Rapid Prototyping',
+      'Low Fidelity Prototyping'
+    ],
+    highlights: [
+      '{{Intuitive GUI}} to configure {{sorting logic}} and control the microcontroller over {{serial}}',
+      '{{Arduino firmware}} for resistor measurement using {{muxed voltage dividers}}',
+      '{{Servo-driven sorting}} mechanism with a {{custom conveyor}} and housing'
+    ]
   },
   {
     title: 'Autonomous Car',
     description: 'Autonomous car in a simulated city',
     detail: 'Shipped 2025',
     thumbnail: 'https://via.placeholder.com/150',
-    caption: '',
-    devSkills: [],
+    caption:
+      '{{Autonomous BMW X5 Controller}} is a {{Webots-based}} self-driving controller I built that performs {{lane keeping}} and {{traffic-light compliance}} in a simulated city using {{vision}}, lightweight {{"HD map" cues}}, and {{closed-loop control}}.',
+    devSkills: ['C', 'Python', 'Computer Vision'],
     designSkills: [],
-    highlights: []
+    highlights: [
+      '{{YOLO}} traffic-light detection and decision making trained on {{5,000+ labeled images}} ({{98% accuracy}})',
+      'Lane-line vision + PID steering control for {{stable lane keeping}}'
+    ]
   },
   {
     title: 'Gravity Visualizer',
-    description: 'See how gravitational quantities change',
+    description: 'Explore how gravitational quantities change',
     detail: 'Shipped 2024',
     thumbnail: 'https://via.placeholder.com/150',
-    caption: '',
-    devSkills: [],
-    designSkills: [],
-    highlights: []
+    caption:
+      'An interactive tool I made for {{IB Physics}} (my favorite high school class) students to {{visualize}} relatively {{abstract astrophysics concepts}} like gravitational potential and gravitational field strength. {{My first coding project ever!}}',
+    devSkills: ['Python'],
+    designSkills: ['User Interviews', 'Low Fidelity Prototyping'],
+    highlights: [
+      'Drag planets around and watch {{gravitational field}} and {{potential graphs}} update in {{real time}}',
+      '{{Customize planetary systems}} to explore how {{mass}} and {{distance}} shape gravitational relationships',
+      'Adopted by my {{high school physics teacher}} to teach {{astrophysics concepts}} in class'
+    ]
   }
 ]
 
@@ -137,7 +213,7 @@ interface ProjectCardProps {
 function ProjectCard({ project, onClick }: ProjectCardProps) {
   return (
     <div className='flex cursor-pointer flex-col gap-3' onClick={onClick}>
-      <div className='aspect-square w-full bg-neutral-800' />
+      <Thumbnail project={project} />
       <div className='flex flex-col gap-1'>
         <div className='font-secondary text-white'>{project.description}</div>
         <div className='font-tertiary text-neutral-400 uppercase'>
