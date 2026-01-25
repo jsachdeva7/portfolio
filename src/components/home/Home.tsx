@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
@@ -95,23 +94,20 @@ export default function Home() {
         <div className='relative'>
           {/* Top/Back Image - puertoRico */}
           <div className='relative -rotate-3 transition-transform duration-500 hover:scale-105 hover:-rotate-6'>
-            <Image
-              src={puertoRico}
+            <img
+              src={puertoRico.src}
               alt='Puerto Rico'
-              width={280}
-              height={350}
               className='rounded-2xl shadow-2xl'
-              priority
+              style={{ width: '280px', height: '350px', objectFit: 'cover' }}
             />
           </div>
           {/* Bottom/Front Image - deltaU */}
           <div className='absolute -bottom-15 -left-30 rotate-3 transition-transform duration-500 hover:scale-105 hover:rotate-6'>
-            <Image
-              src={deltaU}
+            <img
+              src={deltaU.src}
               alt='Delta U'
-              width={220}
-              height={280}
               className='rounded-2xl shadow-2xl'
+              style={{ width: '220px', height: '280px', objectFit: 'cover' }}
             />
           </div>
         </div>

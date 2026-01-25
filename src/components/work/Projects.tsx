@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Autonomous from './assets/Autonomous.svg'
 import CheckIn from './assets/CheckIn.png'
 import Gravity from './assets/Gravity.svg'
@@ -26,13 +25,11 @@ interface ThumbnailProps {
 function Thumbnail({ project }: ThumbnailProps) {
   if (project.title === 'Roboligent') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#0b2e5b]'>
-        <Image
-          src={RMS}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#0b2e5b]'>
+        <img
+          src={RMS.src}
           alt='Robot Management System'
-          fill
-          className='drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
-          style={{ objectFit: 'cover' }}
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -40,12 +37,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'CheckIn') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#452f21] p-6'>
-        <Image
-          src={CheckIn}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#452f21] p-6'>
+        <img
+          src={CheckIn.src}
           alt='CheckIn'
-          fill
-          className='object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -53,12 +49,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Stylistic') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1c4a34] p-6'>
-        <Image
-          src={Stylistic}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1c4a34] p-6'>
+        <img
+          src={Stylistic.src}
           alt='Stylistic'
-          fill
-          className='object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -66,12 +61,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Soar') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333] p-6'>
-        <Image
-          src={Soar}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333] p-6'>
+        <img
+          src={Soar.src}
           alt='Soar'
-          fill
-          className='object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -79,13 +73,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === '/tmp') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1d2c49]'>
-        <Image
-          src={Tmp}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1d2c49]'>
+        <img
+          src={Tmp.src}
           alt='/tmp'
-          fill
-          className='drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
-          style={{ objectFit: 'cover' }}
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -93,13 +85,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Gravity Visualizer') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333]'>
-        <Image
-          src={Gravity}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333]'>
+        <img
+          src={Gravity.src}
           alt='Gravity Visualizer'
-          fill
-          className='drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
-          style={{ objectFit: 'cover' }}
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -107,13 +97,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Autonomous Car') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#39332d]'>
-        <Image
-          src={Autonomous}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#39332d]'>
+        <img
+          src={Autonomous.src}
           alt='Autonomous Car'
-          fill
-          className='drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
-          style={{ objectFit: 'cover' }}
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -121,13 +109,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Resistor Sorter') {
     return (
-      <div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[#242b42]'>
-        <Image
-          src={Robotech}
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#242b42]'>
+        <img
+          src={Robotech.src}
           alt='Resistor Sorter'
-          fill
-          className='drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
-          style={{ objectFit: 'cover' }}
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )

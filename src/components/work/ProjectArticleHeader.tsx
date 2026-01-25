@@ -1,4 +1,3 @@
-import Image, { type StaticImageData } from 'next/image'
 import Autonomous from './assets/Autonomous.svg'
 import CheckIn from './assets/CheckIn.png'
 import Gravity from './assets/Gravity.svg'
@@ -33,43 +32,43 @@ function renderHighlightedText(text: string) {
 
 const thumbnailConfig: Record<
   string,
-  { bg: string; src: StaticImageData; alt: string; style: 'full' | 'padded' }
+  { bg: string; src: string; alt: string; style: 'full' | 'padded' }
 > = {
   Roboligent: {
     bg: 'bg-[#0b2e5b]',
-    src: RMS,
+    src: RMS.src,
     alt: 'Robot Management System',
     style: 'full'
   },
   CheckIn: {
     bg: 'bg-[#452f21]',
-    src: CheckIn,
+    src: CheckIn.src,
     alt: 'CheckIn',
     style: 'padded'
   },
   Stylistic: {
     bg: 'bg-[#1c4a34]',
-    src: Stylistic,
+    src: Stylistic.src,
     alt: 'Stylistic',
     style: 'padded'
   },
-  Soar: { bg: 'bg-[#333333]', src: Soar, alt: 'Soar', style: 'padded' },
-  '/tmp': { bg: 'bg-[#1d2c49]', src: Tmp, alt: '/tmp', style: 'full' },
+  Soar: { bg: 'bg-[#333333]', src: Soar.src, alt: 'Soar', style: 'padded' },
+  '/tmp': { bg: 'bg-[#1d2c49]', src: Tmp.src, alt: '/tmp', style: 'full' },
   'Gravity Visualizer': {
     bg: 'bg-[#333333]',
-    src: Gravity,
+    src: Gravity.src,
     alt: 'Gravity Visualizer',
     style: 'full'
   },
   'Autonomous Car': {
     bg: 'bg-[#39332d]',
-    src: Autonomous,
+    src: Autonomous.src,
     alt: 'Autonomous Car',
     style: 'full'
   },
   'Resistor Sorter': {
     bg: 'bg-[#242b42]',
-    src: Robotech,
+    src: Robotech.src,
     alt: 'Resistor Sorter',
     style: 'full'
   }
@@ -94,14 +93,8 @@ function ArticleThumbnail({ title }: { title: string }) {
       : 'h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
 
   return (
-    <div className={`${containerClasses} relative`}>
-      <Image
-        src={config.src}
-        alt={config.alt}
-        fill
-        className={imgClasses}
-        style={{ objectFit: config.style === 'padded' ? 'contain' : 'cover' }}
-      />
+    <div className={containerClasses}>
+      <img src={config.src} alt={config.alt} className={imgClasses} />
     </div>
   )
 }
