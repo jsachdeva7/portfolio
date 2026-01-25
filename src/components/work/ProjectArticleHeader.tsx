@@ -1,3 +1,4 @@
+import Image, { type StaticImageData } from 'next/image'
 import Autonomous from './assets/Autonomous.svg'
 import CheckIn from './assets/CheckIn.png'
 import Gravity from './assets/Gravity.svg'
@@ -32,43 +33,43 @@ function renderHighlightedText(text: string) {
 
 const thumbnailConfig: Record<
   string,
-  { bg: string; src: string; alt: string; style: 'full' | 'padded' }
+  { bg: string; src: StaticImageData; alt: string; style: 'full' | 'padded' }
 > = {
   Roboligent: {
     bg: 'bg-[#0b2e5b]',
-    src: RMS.src,
+    src: RMS,
     alt: 'Robot Management System',
     style: 'full'
   },
   CheckIn: {
     bg: 'bg-[#452f21]',
-    src: CheckIn.src,
+    src: CheckIn,
     alt: 'CheckIn',
     style: 'padded'
   },
   Stylistic: {
     bg: 'bg-[#1c4a34]',
-    src: Stylistic.src,
+    src: Stylistic,
     alt: 'Stylistic',
     style: 'padded'
   },
-  Soar: { bg: 'bg-[#333333]', src: Soar.src, alt: 'Soar', style: 'padded' },
-  '/tmp': { bg: 'bg-[#1d2c49]', src: Tmp.src, alt: '/tmp', style: 'full' },
+  Soar: { bg: 'bg-[#333333]', src: Soar, alt: 'Soar', style: 'padded' },
+  '/tmp': { bg: 'bg-[#1d2c49]', src: Tmp, alt: '/tmp', style: 'full' },
   'Gravity Visualizer': {
     bg: 'bg-[#333333]',
-    src: Gravity.src,
+    src: Gravity,
     alt: 'Gravity Visualizer',
     style: 'full'
   },
   'Autonomous Car': {
     bg: 'bg-[#39332d]',
-    src: Autonomous.src,
+    src: Autonomous,
     alt: 'Autonomous Car',
     style: 'full'
   },
   'Resistor Sorter': {
     bg: 'bg-[#242b42]',
-    src: Robotech.src,
+    src: Robotech,
     alt: 'Resistor Sorter',
     style: 'full'
   }
@@ -93,8 +94,14 @@ function ArticleThumbnail({ title }: { title: string }) {
       : 'h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
 
   return (
-    <div className={containerClasses}>
-      <img src={config.src} alt={config.alt} className={imgClasses} />
+    <div className={`${containerClasses} relative`}>
+      <Image
+        src={config.src}
+        alt={config.alt}
+        fill
+        className={imgClasses}
+        style={{ objectFit: config.style === 'padded' ? 'contain' : 'cover' }}
+      />
     </div>
   )
 }
