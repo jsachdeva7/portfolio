@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div className='desktop:block relative flex h-full w-full flex-col'>
       {/* Images Section - on mobile: first/top, on desktop: absolute top-right */}
-      <div className='desktop:absolute desktop:top-[-3em] desktop:right-0 desktop:p-16 desktop:w-auto relative flex w-full justify-center pb-8'>
+      <div className='desktop:absolute desktop:top-[-3em] desktop:right-0 desktop:p-16 desktop:w-auto desktop:pb-0 relative flex w-full justify-center pt-3 pb-11'>
         {/* Mobile: Single combined image */}
         <div className='desktop:hidden relative'>
           <img
