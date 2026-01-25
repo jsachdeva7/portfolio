@@ -1,6 +1,11 @@
+import Autonomous from './assets/Autonomous.svg'
 import CheckIn from './assets/CheckIn.png'
+import Gravity from './assets/Gravity.svg'
 import RMS from './assets/RMS.svg'
+import Robotech from './assets/Robotech.svg'
+import Soar from './assets/Soar.png'
 import Stylistic from './assets/Stylistic.png'
+import Tmp from './assets/Tmp.svg'
 
 export interface Project {
   title: string
@@ -20,11 +25,11 @@ interface ThumbnailProps {
 function Thumbnail({ project }: ThumbnailProps) {
   if (project.title === 'Roboligent') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center bg-neutral-800'>
+      <div className='flex aspect-square w-full items-center justify-center bg-[#0b2e5b]'>
         <img
           src={RMS.src}
           alt='Robot Management System'
-          className='h-auto w-full'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
         />
       </div>
     )
@@ -32,11 +37,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'CheckIn') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-neutral-800 p-6'>
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#452f21] p-6'>
         <img
           src={CheckIn.src}
           alt='CheckIn'
-          className='h-full w-auto max-w-full object-contain'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
         />
       </div>
     )
@@ -44,17 +49,77 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Stylistic') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-neutral-800 p-6'>
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1c4a34] p-6'>
         <img
           src={Stylistic.src}
           alt='Stylistic'
-          className='h-full w-auto max-w-full object-contain'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
         />
       </div>
     )
   }
 
-  return <div className='aspect-square w-full bg-neutral-800' />
+  if (project.title === 'Soar') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333] p-6'>
+        <img
+          src={Soar.src}
+          alt='Soar'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+        />
+      </div>
+    )
+  }
+
+  if (project.title === '/tmp') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center bg-[#1d2c49]'>
+        <img
+          src={Tmp.src}
+          alt='/tmp'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+        />
+      </div>
+    )
+  }
+
+  if (project.title === 'Gravity Visualizer') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center bg-[#333333]'>
+        <img
+          src={Gravity.src}
+          alt='Gravity Visualizer'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+        />
+      </div>
+    )
+  }
+
+  if (project.title === 'Autonomous Car') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center bg-[#39332d]'>
+        <img
+          src={Autonomous.src}
+          alt='Autonomous Car'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+        />
+      </div>
+    )
+  }
+
+  if (project.title === 'Resistor Sorter') {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center bg-[#242b42]'>
+        <img
+          src={Robotech.src}
+          alt='Resistor Sorter'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+        />
+      </div>
+    )
+  }
+
+  return <div className='aspect-square w-full bg-white' />
 }
 
 export const projects: Project[] = [
@@ -156,6 +221,20 @@ export const projects: Project[] = [
     ]
   },
   {
+    title: 'Autonomous Car',
+    description: 'Autonomous car in a simulated city',
+    detail: 'Shipped 2025',
+    thumbnail: 'https://via.placeholder.com/150',
+    caption:
+      '{{Autonomous BMW X5 Controller}} is a {{Webots-based}} self-driving controller I built that performs {{lane keeping}} and {{traffic-light compliance}} in a simulated city using {{vision}}, lightweight {{"HD map" cues}}, and {{closed-loop control}}.',
+    devSkills: ['C', 'Python', 'Computer Vision'],
+    designSkills: [],
+    highlights: [
+      '{{YOLO}} traffic-light detection and decision making trained on {{5,000+ labeled images}} ({{98% accuracy}})',
+      'Lane-line vision + PID steering control for {{stable lane keeping}}'
+    ]
+  },
+  {
     title: 'Resistor Sorter',
     description: "An ECE lab tech's dream",
     detail: 'RoboTech 2025',
@@ -172,20 +251,6 @@ export const projects: Project[] = [
       '{{Intuitive GUI}} to configure {{sorting logic}} and control the microcontroller over {{serial}}',
       '{{Arduino firmware}} for resistor measurement using {{muxed voltage dividers}}',
       '{{Servo-driven sorting}} mechanism with a {{custom conveyor}} and housing'
-    ]
-  },
-  {
-    title: 'Autonomous Car',
-    description: 'Autonomous car in a simulated city',
-    detail: 'Shipped 2025',
-    thumbnail: 'https://via.placeholder.com/150',
-    caption:
-      '{{Autonomous BMW X5 Controller}} is a {{Webots-based}} self-driving controller I built that performs {{lane keeping}} and {{traffic-light compliance}} in a simulated city using {{vision}}, lightweight {{"HD map" cues}}, and {{closed-loop control}}.',
-    devSkills: ['C', 'Python', 'Computer Vision'],
-    designSkills: [],
-    highlights: [
-      '{{YOLO}} traffic-light detection and decision making trained on {{5,000+ labeled images}} ({{98% accuracy}})',
-      'Lane-line vision + PID steering control for {{stable lane keeping}}'
     ]
   },
   {
@@ -230,7 +295,7 @@ interface ProjectsProps {
 
 export default function Projects({ onSelectProject }: ProjectsProps) {
   return (
-    <div className='grid grid-cols-4 gap-6'>
+    <div className='grid grid-cols-4 gap-4'>
       {projects.map((project, index) => (
         <ProjectCard
           key={index}
