@@ -1,7 +1,7 @@
 import Navbar from '@/components/shared/Navbar'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Cousine, Crimson_Pro, Be_Vietnam_Pro } from 'next/font/google'
+import { Be_Vietnam_Pro, Cousine, Crimson_Pro } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -53,7 +53,7 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
-          <div className='flex-1 p-16'>{children}</div>
+          <div className='desktop:p-16 flex-1 p-6'>{children}</div>
         </Providers>
       </body>
     </html>

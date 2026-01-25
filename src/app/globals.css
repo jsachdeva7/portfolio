@@ -69,6 +69,8 @@
   --font-family-secondary: var(--font-be-vietnam-pro), sans-serif;
   --font-family-tertiary: var(--font-cousine), monospace;
 
+  --breakpoint-desktop: 769px;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

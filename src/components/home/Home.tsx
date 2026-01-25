@@ -23,12 +23,36 @@ export default function Home() {
     }
   }
   return (
-    <div className='relative h-full w-full'>
-      <div className='absolute bottom-0 left-0 flex w-1/2 flex-col gap-6'>
-        <h1 className='font-primary mb-5 text-7xl'>
-          Hey, I&apos;m Jagat<span className='text-[4.25rem]'>!</span>
+    <div className='desktop:block relative flex h-full w-full flex-col'>
+      {/* Images Section - on mobile: first/top, on desktop: absolute top-right */}
+      <div className='desktop:absolute desktop:top-[-3em] desktop:right-0 desktop:p-16 desktop:w-auto desktop:min-h-0 desktop:pb-0 desktop:px-0 relative min-h-[320px] w-full px-4'>
+        <div className='desktop:w-auto desktop:relative relative h-full w-full'>
+          {/* Top/Back Image - puertoRico - on desktop: relative, on mobile: right edge aligned */}
+          <div className='desktop:relative absolute top-0 right-0 -rotate-3 transition-transform duration-500 hover:scale-105 hover:-rotate-6'>
+            <img
+              src={puertoRico.src}
+              alt='Puerto Rico'
+              className='desktop:h-[350px] desktop:w-[280px] h-[250px] w-[200px] rounded-2xl object-cover shadow-2xl'
+            />
+          </div>
+          {/* Bottom/Front Image - deltaU - on desktop: absolute overlapping, on mobile: left edge aligned */}
+          <div className='desktop:absolute desktop:-bottom-40 desktop:-left-40 desktop:top-50 absolute top-20 left-0 rotate-3 transition-transform duration-500 hover:scale-105 hover:rotate-6'>
+            <img
+              src={deltaU.src}
+              alt='Delta U'
+              className='desktop:h-[280px] desktop:w-[220px] h-[200px] w-[155px] rounded-2xl object-cover shadow-2xl'
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Text Section - on mobile: second/bottom, on desktop: absolute bottom-left */}
+      <div className='desktop:absolute desktop:bottom-0 desktop:left-0 desktop:w-1/2 flex flex-col gap-6'>
+        <h1 className='font-primary desktop:text-7xl mb-2 text-5xl'>
+          Hey, I&apos;m Jagat
+          <span className='desktop:text-[4.25rem] text-[2.875rem]'>!</span>
         </h1>
-        <p className='font-secondary mb-3 text-xl text-neutral-400'>
+        <p className='font-secondary desktop:text-xl desktop:mb-3 mb-6 text-lg text-neutral-400'>
           I&apos;m a customer-first{' '}
           <span className='text-white'>developer designer</span> and end-to-end{' '}
           <span className='text-white'>product builder</span>.
@@ -48,19 +72,19 @@ export default function Home() {
               aria-label='Copy email to clipboard'
             >
               {copied ? (
-                <LuCheck className='size-5 !cursor-default text-neutral-400' />
+                <LuCheck className='size-5 cursor-default! text-neutral-400' />
               ) : (
                 <LuCopy className='size-4 text-neutral-400 hover:text-white' />
               )}
             </button>
           </span>
         </p>
-        <div className='flex items-center space-x-6'>
+        <div className='desktop:justify-start flex items-center justify-center space-x-6'>
           <Link
             href='https://linkedin.com/in/jagat-sachdeva'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaLinkedin />
           </Link>
@@ -68,7 +92,7 @@ export default function Home() {
             href='https://github.com/jsachdeva7'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaGithub />
           </Link>
@@ -76,7 +100,7 @@ export default function Home() {
             href='https://x.com/JagatSachdeva'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaXTwitter />
           </Link>
@@ -84,32 +108,10 @@ export default function Home() {
             href='https://www.instagram.com/jagatsachdeva/'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaInstagram />
           </Link>
-        </div>
-      </div>
-      <div className='absolute top-[-3em] right-0 p-16'>
-        <div className='relative'>
-          {/* Top/Back Image - puertoRico */}
-          <div className='relative -rotate-3 transition-transform duration-500 hover:scale-105 hover:-rotate-6'>
-            <img
-              src={puertoRico.src}
-              alt='Puerto Rico'
-              className='rounded-2xl shadow-2xl'
-              style={{ width: '280px', height: '350px', objectFit: 'cover' }}
-            />
-          </div>
-          {/* Bottom/Front Image - deltaU */}
-          <div className='absolute -bottom-15 -left-30 rotate-3 transition-transform duration-500 hover:scale-105 hover:rotate-6'>
-            <img
-              src={deltaU.src}
-              alt='Delta U'
-              className='rounded-2xl shadow-2xl'
-              style={{ width: '220px', height: '280px', objectFit: 'cover' }}
-            />
-          </div>
         </div>
       </div>
     </div>
