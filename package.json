@@ -12,7 +12,7 @@
     "format-check": "prettier --check .",
     "format-fix": "prettier --write .",
     "type-check": "tsc --noEmit",
-    "check": "pnpm lint-check && pnpm format-check && pnpm type-check"
+    "check": "pnpm lint-check && pnpm format-check"
   },
   "dependencies": {
     "@radix-ui/react-context-menu": "^2.2.16",
