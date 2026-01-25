@@ -1,6 +1,15 @@
+import Autonomous from './assets/Autonomous.svg'
+import CheckIn from './assets/CheckIn.png'
+import Gravity from './assets/Gravity.svg'
+import RMS from './assets/RMS.svg'
+import Robotech from './assets/Robotech.svg'
+import Soar from './assets/Soar.png'
+import Stylistic from './assets/Stylistic.png'
+import Tmp from './assets/Tmp.svg'
+
 interface ProjectArticleHeaderProps {
+  title: string
   description: string
-  thumbnail: string
   caption: string
   highlights: string[]
   designSkills: string[]
@@ -21,9 +30,78 @@ function renderHighlightedText(text: string) {
   })
 }
 
+const thumbnailConfig: Record<
+  string,
+  { bg: string; src: string; alt: string; style: 'full' | 'padded' }
+> = {
+  Roboligent: {
+    bg: 'bg-[#0b2e5b]',
+    src: RMS.src,
+    alt: 'Robot Management System',
+    style: 'full'
+  },
+  CheckIn: {
+    bg: 'bg-[#452f21]',
+    src: CheckIn.src,
+    alt: 'CheckIn',
+    style: 'padded'
+  },
+  Stylistic: {
+    bg: 'bg-[#1c4a34]',
+    src: Stylistic.src,
+    alt: 'Stylistic',
+    style: 'padded'
+  },
+  Soar: { bg: 'bg-[#333333]', src: Soar.src, alt: 'Soar', style: 'padded' },
+  '/tmp': { bg: 'bg-[#1d2c49]', src: Tmp.src, alt: '/tmp', style: 'full' },
+  'Gravity Visualizer': {
+    bg: 'bg-[#333333]',
+    src: Gravity.src,
+    alt: 'Gravity Visualizer',
+    style: 'full'
+  },
+  'Autonomous Car': {
+    bg: 'bg-[#39332d]',
+    src: Autonomous.src,
+    alt: 'Autonomous Car',
+    style: 'full'
+  },
+  'Resistor Sorter': {
+    bg: 'bg-[#242b42]',
+    src: Robotech.src,
+    alt: 'Resistor Sorter',
+    style: 'full'
+  }
+}
+
+function ArticleThumbnail({ title }: { title: string }) {
+  const config = thumbnailConfig[title]
+
+  if (!config) {
+    return <div className='mb-5 aspect-800/520 w-full bg-neutral-800' />
+  }
+
+  const baseContainerClasses = `mb-5 flex aspect-800/520 w-full items-center justify-center overflow-hidden ${config.bg}`
+  const containerClasses =
+    config.style === 'padded'
+      ? `${baseContainerClasses} p-12`
+      : baseContainerClasses
+
+  const imgClasses =
+    config.style === 'padded'
+      ? 'h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+      : 'h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+
+  return (
+    <div className={containerClasses}>
+      <img src={config.src} alt={config.alt} className={imgClasses} />
+    </div>
+  )
+}
+
 export default function ProjectArticleHeader({
+  title,
   description,
-  thumbnail,
   caption,
   highlights,
   designSkills,
@@ -35,7 +113,7 @@ export default function ProjectArticleHeader({
       <h1 className='font-primary mb-5 text-4xl text-white'>{description}</h1>
 
       {/* Thumbnail */}
-      <div className='mb-5 aspect-[800/520] w-full bg-neutral-800' />
+      <ArticleThumbnail title={title} />
 
       {/* Caption */}
       <div className='font-secondary mb-14 text-lg text-neutral-400'>

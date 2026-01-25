@@ -27,7 +27,10 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
   title: 'Jagat Sachdeva Portfolio',
-  description: 'Product designer and developer.'
+  description: 'Product designer and developer.',
+  icons: {
+    icon: '/Farfalle.png'
+  }
 }
 
 export default function RootLayout({

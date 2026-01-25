@@ -25,11 +25,11 @@ interface ThumbnailProps {
 function Thumbnail({ project }: ThumbnailProps) {
   if (project.title === 'Roboligent') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center bg-[#0b2e5b]'>
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#0b2e5b]'>
         <img
           src={RMS.src}
           alt='Robot Management System'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -41,7 +41,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={CheckIn.src}
           alt='CheckIn'
-          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -53,7 +53,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Stylistic.src}
           alt='Stylistic'
-          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -65,7 +65,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Soar.src}
           alt='Soar'
-          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -73,11 +73,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === '/tmp') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center bg-[#1d2c49]'>
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1d2c49]'>
         <img
           src={Tmp.src}
           alt='/tmp'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -85,11 +85,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Gravity Visualizer') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center bg-[#333333]'>
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333]'>
         <img
           src={Gravity.src}
           alt='Gravity Visualizer'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -97,11 +97,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Autonomous Car') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center bg-[#39332d]'>
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#39332d]'>
         <img
           src={Autonomous.src}
           alt='Autonomous Car'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -109,11 +109,11 @@ function Thumbnail({ project }: ThumbnailProps) {
 
   if (project.title === 'Resistor Sorter') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center bg-[#242b42]'>
+      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#242b42]'>
         <img
           src={Robotech.src}
           alt='Resistor Sorter'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
         />
       </div>
     )
@@ -277,7 +277,7 @@ interface ProjectCardProps {
 
 function ProjectCard({ project, onClick }: ProjectCardProps) {
   return (
-    <div className='flex cursor-pointer flex-col gap-3' onClick={onClick}>
+    <div className='group flex cursor-pointer flex-col gap-3' onClick={onClick}>
       <Thumbnail project={project} />
       <div className='flex flex-col gap-1'>
         <div className='font-secondary text-white'>{project.description}</div>

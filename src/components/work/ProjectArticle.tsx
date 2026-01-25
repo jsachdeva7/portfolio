@@ -22,8 +22,8 @@ export default function ProjectArticle({
       </button>
       <div className='mx-auto flex w-[680px] flex-col gap-16'>
         <ProjectArticleHeader
+          title={project.title}
           description={project.description}
-          thumbnail={project.thumbnail}
           caption={project.caption}
           highlights={project.highlights}
           designSkills={project.designSkills}
