@@ -6,6 +6,7 @@ import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { LuCheck, LuCopy } from 'react-icons/lu'
 import deltaU from './assets/deltaU.jpg'
+import photosTogether from './assets/PhotosTogether.png'
 import puertoRico from './assets/puertoRico.jpg'
 
 export default function Home() {
@@ -25,22 +26,29 @@ export default function Home() {
   return (
     <div className='desktop:block relative flex h-full w-full flex-col'>
       {/* Images Section - on mobile: first/top, on desktop: absolute top-right */}
-      <div className='desktop:absolute desktop:top-[-3em] desktop:right-0 desktop:p-16 desktop:w-auto desktop:min-h-0 desktop:pb-0 desktop:px-0 relative min-h-[320px] w-full px-4'>
-        <div className='desktop:w-auto desktop:relative relative h-full w-full'>
-          {/* Top/Back Image - puertoRico - on desktop: relative, on mobile: right edge aligned */}
-          <div className='desktop:relative absolute top-0 right-0 -rotate-3 transition-transform duration-500 hover:scale-105 hover:-rotate-6'>
+      <div className='desktop:absolute desktop:top-[-3em] desktop:right-0 desktop:p-16 desktop:w-auto relative flex w-full justify-center pb-8'>
+        {/* Mobile: Single combined image */}
+        <div className='desktop:hidden relative'>
+          <img
+            src={photosTogether.src}
+            alt='Photos together'
+            className='w-full max-w-sm rounded-2xl object-contain shadow-2xl'
+          />
+        </div>
+        {/* Desktop: Two separate overlapping images */}
+        <div className='desktop:block relative hidden'>
+          <div className='relative -rotate-3 transition-transform duration-500 hover:scale-105 hover:-rotate-6'>
             <img
               src={puertoRico.src}
               alt='Puerto Rico'
-              className='desktop:h-[350px] desktop:w-[280px] h-[250px] w-[200px] rounded-2xl object-cover shadow-2xl'
+              className='h-[350px] w-[280px] rounded-2xl object-cover shadow-2xl'
             />
           </div>
-          {/* Bottom/Front Image - deltaU - on desktop: absolute overlapping, on mobile: left edge aligned */}
-          <div className='desktop:absolute desktop:-bottom-40 desktop:-left-40 desktop:top-50 absolute top-20 left-0 rotate-3 transition-transform duration-500 hover:scale-105 hover:rotate-6'>
+          <div className='absolute -bottom-40 -left-40 rotate-3 transition-transform duration-500 hover:scale-105 hover:rotate-6'>
             <img
               src={deltaU.src}
               alt='Delta U'
-              className='desktop:h-[280px] desktop:w-[220px] h-[200px] w-[155px] rounded-2xl object-cover shadow-2xl'
+              className='h-[280px] w-[220px] rounded-2xl object-cover shadow-2xl'
             />
           </div>
         </div>
@@ -79,12 +87,12 @@ export default function Home() {
             </button>
           </span>
         </p>
-        <div className='desktop:justify-start flex items-center justify-center space-x-6'>
+        <div className='desktop:justify-start desktop:space-x-6 flex items-center justify-center space-x-8'>
           <Link
             href='https://linkedin.com/in/jagat-sachdeva'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaLinkedin />
           </Link>
@@ -92,7 +100,7 @@ export default function Home() {
             href='https://github.com/jsachdeva7'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaGithub />
           </Link>
@@ -100,7 +108,7 @@ export default function Home() {
             href='https://x.com/JagatSachdeva'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaXTwitter />
           </Link>
@@ -108,7 +116,7 @@ export default function Home() {
             href='https://www.instagram.com/jagatsachdeva/'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaInstagram />
           </Link>
