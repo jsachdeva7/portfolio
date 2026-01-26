@@ -25,9 +25,7 @@ interface ThumbnailProps {
 }
 
 function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
-  const scaleClass = isInViewport
-    ? 'scale-105 desktop:scale-100'
-    : ''
+  const scaleClass = isInViewport ? 'scale-105 desktop:scale-100' : ''
   const hoverClass = 'group-hover:scale-105'
   if (project.title === 'Roboligent') {
     return (
@@ -282,7 +280,11 @@ interface ProjectCardProps {
   isCentered?: boolean
 }
 
-function ProjectCard({ project, onClick, isCentered = false }: ProjectCardProps) {
+function ProjectCard({
+  project,
+  onClick,
+  isCentered = false
+}: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
 
   return (
@@ -364,7 +366,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
   return (
     <div
       ref={containerRef}
-      className='grid grid-cols-1 gap-4 desktop:grid-cols-4'
+      className='desktop:grid-cols-4 grid grid-cols-1 gap-4'
     >
       {projects.map((project, index) => (
         <ProjectCard
