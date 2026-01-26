@@ -325,10 +325,12 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
 
       const cards = containerRef.current.querySelectorAll('[data-card-index]')
       const viewportCenter = window.innerHeight / 2
-      let closestCard: Element | null = null
+      let closestCard: HTMLElement | null = null
       let closestDistance = Infinity
 
       cards.forEach(card => {
+        if (!(card instanceof HTMLElement)) return
+
         const rect = card.getBoundingClientRect()
         const cardCenter = rect.top + rect.height / 2
         const distance = Math.abs(cardCenter - viewportCenter)
@@ -345,7 +347,9 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
       })
 
       if (closestCard) {
-        const projectTitle = closestCard.getAttribute('data-card-index')
+        const projectTitle = (closestCard as HTMLElement).getAttribute(
+          'data-card-index'
+        )
         setCenteredProject(projectTitle)
       } else {
         setCenteredProject(null)
