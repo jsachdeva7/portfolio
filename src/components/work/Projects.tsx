@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import Autonomous from './assets/Autonomous.svg'
 import CheckIn from './assets/CheckIn.png'
 import Gravity from './assets/Gravity.svg'
@@ -20,16 +21,21 @@ export interface Project {
 
 interface ThumbnailProps {
   project: Project
+  isInViewport?: boolean
 }
 
-function Thumbnail({ project }: ThumbnailProps) {
+function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
+  const scaleClass = isInViewport
+    ? 'scale-105 desktop:scale-100'
+    : ''
+  const hoverClass = 'group-hover:scale-105'
   if (project.title === 'Roboligent') {
     return (
       <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#0b2e5b]'>
         <img
           src={RMS.src}
           alt='Robot Management System'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -41,7 +47,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={CheckIn.src}
           alt='CheckIn'
-          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -53,7 +59,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Stylistic.src}
           alt='Stylistic'
-          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -65,7 +71,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Soar.src}
           alt='Soar'
-          className='h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -77,7 +83,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Tmp.src}
           alt='/tmp'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -89,7 +95,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Gravity.src}
           alt='Gravity Visualizer'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -101,7 +107,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Autonomous.src}
           alt='Autonomous Car'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -113,7 +119,7 @@ function Thumbnail({ project }: ThumbnailProps) {
         <img
           src={Robotech.src}
           alt='Resistor Sorter'
-          className='h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out group-hover:scale-105'
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
         />
       </div>
     )
@@ -273,12 +279,20 @@ export const projects: Project[] = [
 interface ProjectCardProps {
   project: Project
   onClick: () => void
+  isCentered?: boolean
 }
 
-function ProjectCard({ project, onClick }: ProjectCardProps) {
+function ProjectCard({ project, onClick, isCentered = false }: ProjectCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null)
+
   return (
-    <div className='group flex cursor-pointer flex-col gap-3' onClick={onClick}>
-      <Thumbnail project={project} />
+    <div
+      ref={cardRef}
+      className='group flex cursor-pointer flex-col gap-3'
+      onClick={onClick}
+      data-card-index={project.title}
+    >
+      <Thumbnail project={project} isInViewport={isCentered} />
       <div className='flex flex-col gap-1'>
         <div className='font-secondary text-white'>{project.description}</div>
         <div className='font-tertiary text-neutral-400 uppercase'>
@@ -294,13 +308,70 @@ interface ProjectsProps {
 }
 
 export default function Projects({ onSelectProject }: ProjectsProps) {
+  const [centeredProject, setCenteredProject] = useState<string | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const findCenteredCard = () => {
+      // Only run on mobile (viewport width < 769px)
+      if (window.innerWidth >= 769) {
+        setCenteredProject(null)
+        return
+      }
+
+      if (!containerRef.current) return
+
+      const cards = containerRef.current.querySelectorAll('[data-card-index]')
+      const viewportCenter = window.innerHeight / 2
+      let closestCard: Element | null = null
+      let closestDistance = Infinity
+
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect()
+        const cardCenter = rect.top + rect.height / 2
+        const distance = Math.abs(cardCenter - viewportCenter)
+
+        // Only consider cards that are in the center 50% of the viewport
+        const isInCenterZone =
+          cardCenter >= viewportCenter * 0.5 &&
+          cardCenter <= viewportCenter * 1.5
+
+        if (isInCenterZone && distance < closestDistance) {
+          closestDistance = distance
+          closestCard = card
+        }
+      })
+
+      if (closestCard) {
+        const projectTitle = closestCard.getAttribute('data-card-index')
+        setCenteredProject(projectTitle)
+      } else {
+        setCenteredProject(null)
+      }
+    }
+
+    // Check on scroll and initial load
+    findCenteredCard()
+    window.addEventListener('scroll', findCenteredCard, { passive: true })
+    window.addEventListener('resize', findCenteredCard)
+
+    return () => {
+      window.removeEventListener('scroll', findCenteredCard)
+      window.removeEventListener('resize', findCenteredCard)
+    }
+  }, [])
+
   return (
-    <div className='grid grid-cols-4 gap-4'>
+    <div
+      ref={containerRef}
+      className='grid grid-cols-1 gap-4 desktop:grid-cols-4'
+    >
       {projects.map((project, index) => (
         <ProjectCard
           key={index}
           project={project}
           onClick={() => onSelectProject(project)}
+          isCentered={centeredProject === project.title}
         />
       ))}
     </div>

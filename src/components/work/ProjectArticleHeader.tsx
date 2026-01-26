@@ -78,13 +78,15 @@ function ArticleThumbnail({ title }: { title: string }) {
   const config = thumbnailConfig[title]
 
   if (!config) {
-    return <div className='mb-5 aspect-800/520 w-full bg-neutral-800' />
+    return (
+      <div className='desktop:aspect-800/520 mb-5 aspect-square w-full bg-neutral-800' />
+    )
   }
 
-  const baseContainerClasses = `mb-5 flex aspect-800/520 w-full items-center justify-center overflow-hidden ${config.bg}`
+  const baseContainerClasses = `mb-5 flex aspect-square w-full items-center justify-center overflow-hidden desktop:aspect-800/520 ${config.bg}`
   const containerClasses =
     config.style === 'padded'
-      ? `${baseContainerClasses} p-12`
+      ? `${baseContainerClasses} p-6 desktop:p-12`
       : baseContainerClasses
 
   const imgClasses =
@@ -110,18 +112,20 @@ export default function ProjectArticleHeader({
   return (
     <div className='flex flex-col'>
       {/* Title */}
-      <h1 className='font-primary mb-5 text-4xl text-white'>{description}</h1>
+      <h1 className='font-primary desktop:mb-5 desktop:text-4xl mb-3 text-3xl text-white'>
+        {description}
+      </h1>
 
       {/* Thumbnail */}
       <ArticleThumbnail title={title} />
 
       {/* Caption */}
-      <div className='font-secondary mb-14 text-lg text-neutral-400'>
+      <div className='font-secondary desktop:mb-14 desktop:text-lg mb-8 text-base leading-relaxed text-neutral-400'>
         {renderHighlightedText(caption)}
       </div>
 
       {/* Highlights and Skills */}
-      <div className='grid grid-cols-2 gap-16'>
+      <div className='desktop:grid desktop:grid-cols-2 desktop:gap-16 flex flex-col gap-8'>
         {/* Highlights Section */}
         <div className='flex flex-col gap-4'>
           <h2 className='font-tertiary text-neutral-400 uppercase'>
@@ -144,14 +148,33 @@ export default function ProjectArticleHeader({
         <div className='flex flex-col gap-4'>
           <h2 className='font-tertiary text-neutral-400 uppercase'>Skills</h2>
           <div className='flex flex-col gap-4'>
-            {/* Design Skills */}
-            {designSkills.length > 0 && (
-              <div className='grid grid-cols-[100px_1fr] gap-4'>
+            {/* Mobile: Stacked with headings */}
+            <div className='desktop:hidden flex flex-col gap-3'>
+              {/* Design Skills */}
+              {designSkills.length > 0 && (
+                <div className='flex flex-col gap-2'>
+                  <span className='font-secondary text-sm text-neutral-400'>
+                    Design
+                  </span>
+                  <span className='font-secondary text-sm text-white'>
+                    {designSkills.map((skill, index) => (
+                      <span key={index}>
+                        {index > 0 && (
+                          <span className='text-neutral-400'>, </span>
+                        )}
+                        {skill}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+              )}
+              {/* Development Skills */}
+              <div className='flex flex-col gap-2'>
                 <span className='font-secondary text-sm text-neutral-400'>
-                  Design
+                  Development
                 </span>
                 <span className='font-secondary text-sm text-white'>
-                  {designSkills.map((skill, index) => (
+                  {devSkills.map((skill, index) => (
                     <span key={index}>
                       {index > 0 && (
                         <span className='text-neutral-400'>, </span>
@@ -161,20 +184,43 @@ export default function ProjectArticleHeader({
                   ))}
                 </span>
               </div>
-            )}
-            {/* Development Skills */}
-            <div className='grid grid-cols-[100px_1fr] gap-4'>
-              <span className='font-secondary text-sm text-neutral-400'>
-                Development
-              </span>
-              <span className='font-secondary text-sm text-white'>
-                {devSkills.map((skill, index) => (
-                  <span key={index}>
-                    {index > 0 && <span className='text-neutral-400'>, </span>}
-                    {skill}
+            </div>
+            {/* Desktop: Grid layout */}
+            <div className='desktop:flex hidden flex-col gap-4'>
+              {/* Design Skills */}
+              {designSkills.length > 0 && (
+                <div className='grid grid-cols-[100px_1fr] gap-4'>
+                  <span className='font-secondary text-sm text-neutral-400'>
+                    Design
                   </span>
-                ))}
-              </span>
+                  <span className='font-secondary text-sm text-white'>
+                    {designSkills.map((skill, index) => (
+                      <span key={index}>
+                        {index > 0 && (
+                          <span className='text-neutral-400'>, </span>
+                        )}
+                        {skill}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+              )}
+              {/* Development Skills */}
+              <div className='grid grid-cols-[100px_1fr] gap-4'>
+                <span className='font-secondary text-sm text-neutral-400'>
+                  Development
+                </span>
+                <span className='font-secondary text-sm text-white'>
+                  {devSkills.map((skill, index) => (
+                    <span key={index}>
+                      {index > 0 && (
+                        <span className='text-neutral-400'>, </span>
+                      )}
+                      {skill}
+                    </span>
+                  ))}
+                </span>
+              </div>
             </div>
           </div>
         </div>

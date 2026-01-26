@@ -53,7 +53,9 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
-          <div className='desktop:p-16 flex-1 p-6'>{children}</div>
+          <div className='desktop:p-16 desktop:pt-20 flex-1 p-6 pt-6'>
+            {children}
+          </div>
         </Providers>
       </body>
     </html>
