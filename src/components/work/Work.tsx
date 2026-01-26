@@ -28,7 +28,7 @@ export default function Work() {
   }, [selectedProject])
 
   return (
-    <div className='desktop:gap-16 flex h-full w-full flex-col gap-8'>
+    <div className='desktop:gap-16 desktop:mt-0 mt-2.5 flex h-full w-full flex-col gap-8'>
       {!selectedProject && <Header />}
       {selectedProject ? (
         <ProjectArticle
