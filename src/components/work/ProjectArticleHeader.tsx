@@ -79,14 +79,14 @@ function ArticleThumbnail({ title }: { title: string }) {
 
   if (!config) {
     return (
-      <div className='desktop:aspect-800/520 mb-5 aspect-square w-full bg-neutral-800' />
+      <div className='tablet:aspect-800/520 mb-5 aspect-square w-full bg-neutral-800' />
     )
   }
 
-  const baseContainerClasses = `mb-5 flex aspect-square w-full items-center justify-center overflow-hidden desktop:aspect-800/520 ${config.bg}`
+  const baseContainerClasses = `mb-5 flex aspect-square w-full items-center justify-center overflow-hidden tablet:aspect-800/520 ${config.bg}`
   const containerClasses =
     config.style === 'padded'
-      ? `${baseContainerClasses} p-6 desktop:p-12`
+      ? `${baseContainerClasses} p-6 tablet:p-12`
       : baseContainerClasses
 
   const imgClasses =
@@ -112,7 +112,7 @@ export default function ProjectArticleHeader({
   return (
     <div className='flex flex-col'>
       {/* Title */}
-      <h1 className='font-primary desktop:mb-5 desktop:text-4xl mb-3 text-3xl text-white'>
+      <h1 className='font-primary tablet:mb-5 tablet:text-4xl mb-3 text-3xl text-white'>
         {description}
       </h1>
 
@@ -120,12 +120,12 @@ export default function ProjectArticleHeader({
       <ArticleThumbnail title={title} />
 
       {/* Caption */}
-      <div className='font-secondary desktop:mb-14 desktop:text-lg mb-8 text-base leading-relaxed text-neutral-400'>
+      <div className='font-secondary tablet:mb-14 tablet:text-lg mb-8 text-base leading-relaxed text-neutral-400'>
         {renderHighlightedText(caption)}
       </div>
 
       {/* Highlights and Skills */}
-      <div className='desktop:grid desktop:grid-cols-2 desktop:gap-16 flex flex-col gap-8'>
+      <div className='tablet:grid tablet:grid-cols-2 tablet:gap-16 flex flex-col gap-8'>
         {/* Highlights Section */}
         <div className='flex flex-col gap-4'>
           <h2 className='font-tertiary text-neutral-400 uppercase'>
@@ -149,7 +149,7 @@ export default function ProjectArticleHeader({
           <h2 className='font-tertiary text-neutral-400 uppercase'>Skills</h2>
           <div className='flex flex-col gap-4'>
             {/* Mobile: Stacked with headings */}
-            <div className='desktop:hidden flex flex-col gap-3'>
+            <div className='tablet:hidden flex flex-col gap-3'>
               {/* Design Skills */}
               {designSkills.length > 0 && (
                 <div className='flex flex-col gap-2'>
@@ -186,7 +186,7 @@ export default function ProjectArticleHeader({
               </div>
             </div>
             {/* Desktop: Grid layout */}
-            <div className='desktop:flex hidden flex-col gap-4'>
+            <div className='tablet:flex hidden flex-col gap-4'>
               {/* Design Skills */}
               {designSkills.length > 0 && (
                 <div className='grid grid-cols-[100px_1fr] gap-4'>

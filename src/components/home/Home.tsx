@@ -24,19 +24,19 @@ export default function Home() {
     }
   }
   return (
-    <div className='desktop:block relative flex h-full w-full flex-col'>
-      {/* Images Section - on mobile: first/top, on desktop: absolute top-right */}
-      <div className='desktop:absolute desktop:top-[-3em] desktop:right-0 desktop:p-16 desktop:w-auto desktop:pb-0 relative flex w-full justify-center pt-3 pb-11'>
+    <div className='tablet:block relative flex h-full w-full flex-col'>
+      {/* Images Section - on mobile: first/top, on tablet/desktop: absolute top-right */}
+      <div className='tablet:absolute tablet:top-[-3em] tablet:right-0 tablet:p-16 tablet:w-auto tablet:pb-0 relative flex w-full justify-center pt-3 pb-11'>
         {/* Mobile: Single combined image */}
-        <div className='desktop:hidden relative'>
+        <div className='tablet:hidden relative'>
           <img
             src={photosTogether.src}
             alt='Photos together'
             className='w-full max-w-sm rounded-2xl object-contain shadow-2xl'
           />
         </div>
-        {/* Desktop: Two separate overlapping images */}
-        <div className='desktop:block relative hidden'>
+        {/* Tablet/Desktop: Two separate overlapping images */}
+        <div className='tablet:block relative hidden'>
           <div className='relative -rotate-3 transition-transform duration-500 hover:scale-105 hover:-rotate-6'>
             <img
               src={puertoRico.src}
@@ -54,13 +54,13 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Text Section - on mobile: second/bottom, on desktop: absolute bottom-left */}
-      <div className='desktop:absolute desktop:bottom-0 desktop:left-0 desktop:w-1/2 flex flex-col gap-6'>
-        <h1 className='font-primary desktop:text-7xl mb-2 text-5xl'>
+      {/* Text Section - on mobile: second/bottom, on tablet/desktop: absolute bottom-left */}
+      <div className='tablet:absolute tablet:bottom-0 tablet:left-0 tablet:w-1/2 flex flex-col gap-6'>
+        <h1 className='font-primary tablet:text-7xl mb-2 text-5xl'>
           Hey, I&apos;m Jagat
-          <span className='desktop:text-[4.25rem] text-[2.875rem]'>!</span>
+          <span className='tablet:text-[4.25rem] text-[2.875rem]'>!</span>
         </h1>
-        <p className='font-secondary desktop:text-xl desktop:mb-3 mb-6 text-lg text-neutral-400'>
+        <p className='font-secondary tablet:text-xl tablet:mb-3 mb-6 text-lg text-neutral-400'>
           I&apos;m a customer-first{' '}
           <span className='text-white'>developer designer</span> and end-to-end{' '}
           <span className='text-white'>product builder</span>.
@@ -87,12 +87,12 @@ export default function Home() {
             </button>
           </span>
         </p>
-        <div className='desktop:justify-start desktop:space-x-6 flex items-center justify-center space-x-8'>
+        <div className='tablet:justify-start tablet:space-x-6 flex items-center justify-center space-x-8'>
           <Link
             href='https://linkedin.com/in/jagat-sachdeva'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaLinkedin />
           </Link>
@@ -100,7 +100,7 @@ export default function Home() {
             href='https://github.com/jsachdeva7'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaGithub />
           </Link>
@@ -108,7 +108,7 @@ export default function Home() {
             href='https://x.com/JagatSachdeva'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaXTwitter />
           </Link>
@@ -116,7 +116,7 @@ export default function Home() {
             href='https://www.instagram.com/jagatsachdeva/'
             target='_blank'
             rel='noopener noreferrer'
-            className='desktop:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
           >
             <FaInstagram />
           </Link>

@@ -53,7 +53,7 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
-          <div className='desktop:p-16 desktop:pt-20 flex-1 p-6 pt-6'>
+          <div className='tablet:p-16 tablet:pt-16 flex-1 p-6 pt-6'>
             {children}
           </div>
         </Providers>

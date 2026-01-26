@@ -25,7 +25,9 @@ interface ThumbnailProps {
 }
 
 function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
-  const scaleClass = isInViewport ? 'scale-105 desktop:scale-100' : ''
+  const animationClass = isInViewport
+    ? 'animate-scale-once tablet:animate-none'
+    : ''
   const hoverClass = 'group-hover:scale-105'
   if (project.title === 'Roboligent') {
     return (
@@ -33,7 +35,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={RMS.src}
           alt='Robot Management System'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -45,7 +47,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={CheckIn.src}
           alt='CheckIn'
-          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -57,7 +59,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Stylistic.src}
           alt='Stylistic'
-          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -69,7 +71,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Soar.src}
           alt='Soar'
-          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -81,7 +83,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Tmp.src}
           alt='/tmp'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -93,7 +95,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Gravity.src}
           alt='Gravity Visualizer'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -105,7 +107,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Autonomous.src}
           alt='Autonomous Car'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -117,7 +119,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Robotech.src}
           alt='Resistor Sorter'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${scaleClass} ${hoverClass}`}
+          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
         />
       </div>
     )
@@ -310,14 +312,16 @@ interface ProjectsProps {
 }
 
 export default function Projects({ onSelectProject }: ProjectsProps) {
-  const [centeredProject, setCenteredProject] = useState<string | null>(null)
+  const [animatingProject, setAnimatingProject] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const previousCenterState = useRef<Map<string, boolean>>(new Map())
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const findCenteredCard = () => {
-      // Only run on mobile (viewport width < 769px)
-      if (window.innerWidth >= 769) {
-        setCenteredProject(null)
+      // Only run when grid is single column (container width < 560px, i.e., 2 * 280px min-width)
+      if (window.innerWidth >= 560) {
+        setAnimatingProject(null)
         return
       }
 
@@ -325,35 +329,42 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
 
       const cards = containerRef.current.querySelectorAll('[data-card-index]')
       const viewportCenter = window.innerHeight / 2
-      let closestCard: HTMLElement | null = null
-      let closestDistance = Infinity
+      const currentCenterState = new Map<string, boolean>()
 
       cards.forEach(card => {
         if (!(card instanceof HTMLElement)) return
 
+        const projectTitle = card.getAttribute('data-card-index')
+        if (!projectTitle) return
+
         const rect = card.getBoundingClientRect()
         const cardCenter = rect.top + rect.height / 2
+
+        // Check if card is in the center zone (within 100px of center)
         const distance = Math.abs(cardCenter - viewportCenter)
+        const isInCenterZone = distance < 100
 
-        // Only consider cards that are in the center 50% of the viewport
-        const isInCenterZone =
-          cardCenter >= viewportCenter * 0.5 &&
-          cardCenter <= viewportCenter * 1.5
+        const wasInCenter =
+          previousCenterState.current.get(projectTitle) || false
+        currentCenterState.set(projectTitle, isInCenterZone)
 
-        if (isInCenterZone && distance < closestDistance) {
-          closestDistance = distance
-          closestCard = card
+        // Trigger animation if card just crossed into center (entering the center zone)
+        if (isInCenterZone && !wasInCenter) {
+          // Clear any existing timeout
+          if (animationTimeoutRef.current) {
+            clearTimeout(animationTimeoutRef.current)
+          }
+
+          setAnimatingProject(projectTitle)
+
+          // Reset after animation completes (300ms duration)
+          animationTimeoutRef.current = setTimeout(() => {
+            setAnimatingProject(null)
+          }, 300)
         }
       })
 
-      if (closestCard) {
-        const projectTitle = (closestCard as HTMLElement).getAttribute(
-          'data-card-index'
-        )
-        setCenteredProject(projectTitle)
-      } else {
-        setCenteredProject(null)
-      }
+      previousCenterState.current = currentCenterState
     }
 
     // Check on scroll and initial load
@@ -364,20 +375,23 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
     return () => {
       window.removeEventListener('scroll', findCenteredCard)
       window.removeEventListener('resize', findCenteredCard)
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current)
+      }
     }
   }, [])
 
   return (
     <div
       ref={containerRef}
-      className='desktop:grid-cols-4 grid grid-cols-1 gap-4'
+      className='grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'
     >
       {projects.map((project, index) => (
         <ProjectCard
           key={index}
           project={project}
           onClick={() => onSelectProject(project)}
-          isCentered={centeredProject === project.title}
+          isCentered={animatingProject === project.title}
         />
       ))}
     </div>
