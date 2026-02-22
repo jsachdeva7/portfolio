@@ -1,6 +1,11 @@
 export default function Header() {
   const workExperience = [
     {
+      year: '2026',
+      company: 'GT iOS Club',
+      position: 'Designer + Developer'
+    },
+    {
       year: '2025',
       company: 'Roboligent',
       position: 'Software Engineering + Product Intern'
