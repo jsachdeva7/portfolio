@@ -179,7 +179,9 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
     )
   }
 
-  return <div className='aspect-square w-full overflow-hidden rounded-2xl bg-white' />
+  return (
+    <div className='aspect-square w-full overflow-hidden rounded-2xl bg-white' />
+  )
 }
 
 export const projects: Project[] = [
@@ -481,10 +483,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
       <section className='flex flex-col gap-4'>
         <div className={sectionTitleBarStackClass}>
           <h2 className={sectionTitleClass}>WORK</h2>
-          <div
-            className='h-px w-full shrink-0 bg-neutral-600/50'
-            aria-hidden
-          />
+          <div className='h-px w-full shrink-0 bg-neutral-600/50' aria-hidden />
         </div>
         <div className={workGridClass}>
           {workProjects.map(project => (
@@ -500,10 +499,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
       <section className='flex flex-col gap-4'>
         <div className={sectionTitleBarStackClass}>
           <h2 className={sectionTitleClass}>PLAY</h2>
-          <div
-            className='h-px w-full shrink-0 bg-neutral-600/50'
-            aria-hidden
-          />
+          <div className='h-px w-full shrink-0 bg-neutral-600/50' aria-hidden />
         </div>
         <div className={playgroundGridClass}>
           {playgroundProjects.map(project => (
