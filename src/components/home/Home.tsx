@@ -5,9 +5,7 @@ import { useState } from 'react'
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { LuCheck, LuCopy } from 'react-icons/lu'
-import deltaU from './assets/deltaU.jpg'
 import photosTogether from './assets/PhotosTogether.png'
-import puertoRico from './assets/puertoRico.jpg'
 
 export default function Home() {
   const [copied, setCopied] = useState(false)
@@ -24,38 +22,18 @@ export default function Home() {
     }
   }
   return (
-    <div className='tablet:block relative flex h-full w-full flex-col'>
+    <div className='tablet:flex-row tablet:items-start tablet:justify-between tablet:pt-14 relative flex w-full flex-col gap-8 pt-16'>
       {/* Images Section - on mobile: first/top, on tablet/desktop: absolute top-right */}
-      <div className='tablet:absolute tablet:top-[-3em] tablet:right-0 tablet:p-16 tablet:w-auto tablet:pb-0 relative flex w-full justify-center pt-3 pb-11'>
-        {/* Mobile: Single combined image */}
-        <div className='tablet:hidden relative'>
-          <img
-            src={photosTogether.src}
-            alt='Photos together'
-            className='w-full max-w-sm rounded-2xl object-contain shadow-2xl'
-          />
-        </div>
-        {/* Tablet/Desktop: Two separate overlapping images */}
-        <div className='tablet:block relative hidden'>
-          <div className='relative -rotate-3 transition-transform duration-500 hover:scale-105 hover:-rotate-6'>
-            <img
-              src={puertoRico.src}
-              alt='Puerto Rico'
-              className='h-[350px] w-[280px] rounded-2xl object-cover shadow-2xl'
-            />
-          </div>
-          <div className='absolute -bottom-40 -left-40 rotate-3 transition-transform duration-500 hover:scale-105 hover:rotate-6'>
-            <img
-              src={deltaU.src}
-              alt='Delta U'
-              className='h-[280px] w-[220px] rounded-2xl object-cover shadow-2xl'
-            />
-          </div>
-        </div>
+      <div className='tablet:order-2 tablet:w-auto tablet:justify-end tablet:pt-0 tablet:pb-0 relative flex w-full justify-center pt-3 pb-11'>
+        <img
+          src={photosTogether.src}
+          alt='Photos together'
+          className='tablet:max-w-[24rem] desktop:max-w-[36rem] w-full max-w-[18rem] rounded-2xl object-contain shadow-2xl'
+        />
       </div>
 
       {/* Text Section - on mobile: second/bottom, on tablet/desktop: absolute bottom-left */}
-      <div className='tablet:absolute tablet:bottom-0 tablet:left-0 tablet:w-1/2 flex flex-col gap-6'>
+      <div className='tablet:order-1 tablet:w-1/2 flex flex-col gap-6'>
         <h1 className='font-primary tablet:text-7xl mb-2 text-5xl'>
           Hey, I&apos;m Jagat
           <span className='tablet:text-[4.25rem] text-[2.875rem]'>!</span>

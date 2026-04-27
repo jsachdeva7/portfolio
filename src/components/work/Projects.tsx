@@ -352,7 +352,7 @@ export const projects: Project[] = [
   },
   {
     title: 'Gravity Visualizer',
-    description: 'Explore how gravitational quantities change',
+    description: 'Explore gravitational quantities',
     detail: 'Shipped 2024',
     thumbnail: 'https://via.placeholder.com/150',
     caption:
@@ -485,7 +485,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
 
   return (
     <div ref={containerRef} className='flex flex-col gap-12'>
-      <section className='flex flex-col gap-4'>
+      <section id='work' className='flex scroll-mt-28 flex-col gap-4'>
         <div className={sectionTitleBarStackClass}>
           <h2 className={sectionTitleClass}>WORK</h2>
           <div className='h-px w-full shrink-0 bg-neutral-600/50' aria-hidden />
@@ -501,7 +501,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
           ))}
         </div>
       </section>
-      <section className='flex flex-col gap-4'>
+      <section id='play' className='flex scroll-mt-28 flex-col gap-4'>
         <div className={sectionTitleBarStackClass}>
           <h2 className={sectionTitleClass}>PLAY</h2>
           <div className='h-px w-full shrink-0 bg-neutral-600/50' aria-hidden />
