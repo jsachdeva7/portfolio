@@ -2,6 +2,11 @@ export default function Header() {
   const workExperience = [
     {
       year: '2026',
+      company: 'Companyon Ventures',
+      position: 'Product Engineer Intern (Incoming)'
+    },
+    {
+      year: '2026',
       company: 'GT iOS Club',
       position: 'Designer + Developer'
     },

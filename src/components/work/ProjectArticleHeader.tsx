@@ -6,6 +6,8 @@ import Robotech from './assets/Robotech.svg'
 import Soar from './assets/Soar.png'
 import Stylistic from './assets/Stylistic.png'
 import Tmp from './assets/Tmp.svg'
+import Allrecipes from './assets/Allrecipes.svg'
+import TFLandscape from './assets/TFLandscape.png'
 
 interface ProjectArticleHeaderProps {
   title: string
@@ -34,6 +36,12 @@ const thumbnailConfig: Record<
   string,
   { bg: string; src: string; alt: string; style: 'full' | 'padded' }
 > = {
+  'Talking Fingers': {
+    bg: 'bg-[#e5ecf7]',
+    src: TFLandscape.src,
+    alt: 'Talking Fingers',
+    style: 'full'
+  },
   Roboligent: {
     bg: 'bg-[#0b2e5b]',
     src: RMS.src,
@@ -71,6 +79,12 @@ const thumbnailConfig: Record<
     src: Robotech.src,
     alt: 'Resistor Sorter',
     style: 'full'
+  },
+  'Allrecipes.com': {
+    bg: 'bg-[#FFB199]',
+    src: Allrecipes.src,
+    alt: 'Allrecipes',
+    style: 'full'
   }
 }
 
@@ -79,11 +93,11 @@ function ArticleThumbnail({ title }: { title: string }) {
 
   if (!config) {
     return (
-      <div className='tablet:aspect-800/520 mb-5 aspect-square w-full bg-neutral-800' />
+      <div className='tablet:aspect-800/520 mb-5 aspect-square w-full rounded-2xl bg-neutral-800' />
     )
   }
 
-  const baseContainerClasses = `mb-5 flex aspect-square w-full items-center justify-center overflow-hidden tablet:aspect-800/520 ${config.bg}`
+  const baseContainerClasses = `mb-5 flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl tablet:aspect-800/520 ${config.bg} transition-shadow duration-300 ease-out hover:shadow-[inset_0_0_88px_rgba(255,255,255,0.12)]`
   const containerClasses =
     config.style === 'padded'
       ? `${baseContainerClasses} p-6 tablet:p-12`
@@ -92,7 +106,7 @@ function ArticleThumbnail({ title }: { title: string }) {
   const imgClasses =
     config.style === 'padded'
       ? 'h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
-      : 'h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+      : 'h-auto w-full rounded-2xl drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
 
   return (
     <div className={containerClasses}>

@@ -7,6 +7,10 @@ import Robotech from './assets/Robotech.svg'
 import Soar from './assets/Soar.png'
 import Stylistic from './assets/Stylistic.png'
 import Tmp from './assets/Tmp.svg'
+import Allrecipes from './assets/Allrecipes.svg'
+import TF from './assets/TF.png'
+
+export type ProjectSection = 'work' | 'playground'
 
 export interface Project {
   title: string
@@ -17,6 +21,7 @@ export interface Project {
   devSkills: string[]
   designSkills: string[]
   highlights: string[]
+  section: ProjectSection
 }
 
 interface ThumbnailProps {
@@ -24,18 +29,39 @@ interface ThumbnailProps {
   isInViewport?: boolean
 }
 
+const thumbImgShadow = 'drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
+
+/** Inset light glow on hover; drop-shadow stays on the img without hover scale to avoid filter glitches. */
+const thumbFrameHoverGlow =
+  'transition-shadow duration-300 ease-out group-hover:shadow-[inset_0_0_88px_rgba(255,255,255,0.12)]'
+
 function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   const animationClass = isInViewport
     ? 'animate-scale-once tablet:animate-none'
     : ''
-  const hoverClass = 'group-hover:scale-105'
+  if (project.title === 'Talking Fingers') {
+    return (
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#e5ecf7] ${thumbFrameHoverGlow}`}
+      >
+        <img
+          src={TF.src}
+          alt='Talking Fingers'
+          className={`${thumbImgShadow} h-auto w-full rounded-2xl ${animationClass}`}
+        />
+      </div>
+    )
+  }
+
   if (project.title === 'Roboligent') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#0b2e5b]'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#0b2e5b] ${thumbFrameHoverGlow}`}
+      >
         <img
           src={RMS.src}
           alt='Robot Management System'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
         />
       </div>
     )
@@ -43,11 +69,13 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
 
   if (project.title === 'CheckIn') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#452f21] p-6'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-3xl bg-[#452f21] p-6 ${thumbFrameHoverGlow}`}
+      >
         <img
           src={CheckIn.src}
           alt='CheckIn'
-          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain ${animationClass}`}
         />
       </div>
     )
@@ -55,11 +83,13 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
 
   if (project.title === 'Stylistic') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1c4a34] p-6'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-3xl bg-[#1c4a34] p-6 ${thumbFrameHoverGlow}`}
+      >
         <img
           src={Stylistic.src}
           alt='Stylistic'
-          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain ${animationClass}`}
         />
       </div>
     )
@@ -67,11 +97,13 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
 
   if (project.title === 'Soar') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333] p-6'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#333333] p-6 ${thumbFrameHoverGlow}`}
+      >
         <img
           src={Soar.src}
           alt='Soar'
-          className={`h-full w-auto max-w-full object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain ${animationClass}`}
         />
       </div>
     )
@@ -79,11 +111,13 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
 
   if (project.title === '/tmp') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#1d2c49]'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#1d2c49] ${thumbFrameHoverGlow}`}
+      >
         <img
           src={Tmp.src}
           alt='/tmp'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
         />
       </div>
     )
@@ -91,11 +125,13 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
 
   if (project.title === 'Gravity Visualizer') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#333333]'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#333333] ${thumbFrameHoverGlow}`}
+      >
         <img
           src={Gravity.src}
           alt='Gravity Visualizer'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
         />
       </div>
     )
@@ -103,11 +139,13 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
 
   if (project.title === 'Autonomous Car') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#39332d]'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#39332d] ${thumbFrameHoverGlow}`}
+      >
         <img
           src={Autonomous.src}
           alt='Autonomous Car'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
         />
       </div>
     )
@@ -115,20 +153,63 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
 
   if (project.title === 'Resistor Sorter') {
     return (
-      <div className='flex aspect-square w-full items-center justify-center overflow-hidden bg-[#242b42]'>
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#242b42] ${thumbFrameHoverGlow}`}
+      >
         <img
           src={Robotech.src}
           alt='Resistor Sorter'
-          className={`h-auto w-full drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-out ${animationClass} ${hoverClass}`}
+          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
         />
       </div>
     )
   }
 
-  return <div className='aspect-square w-full bg-white' />
+  if (project.title === 'Allrecipes.com') {
+    return (
+      <div
+        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#964D36] ${thumbFrameHoverGlow}`}
+      >
+        <img
+          src={Allrecipes.src}
+          alt='Allrecipes'
+          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
+        />
+      </div>
+    )
+  }
+
+  return <div className='aspect-square w-full overflow-hidden rounded-2xl bg-white' />
 }
 
 export const projects: Project[] = [
+  {
+    title: 'Talking Fingers',
+    description: 'Intentionally learn sign language',
+    detail: 'shipping soon',
+    thumbnail: 'https://via.placeholder.com/150',
+    caption: 'Coming soon',
+    devSkills: [],
+    designSkills: [],
+    highlights: [],
+    section: 'work'
+  },
+  {
+    title: 'CheckIn',
+    description: 'A better way to keep in touch',
+    detail: 'Shipping soon',
+    thumbnail: 'https://via.placeholder.com/150',
+    caption:
+      'Ever said {{"We have to stay in touch!"}} and then never followed up? Inspired by my time away from campus interning last fall, {{CheckIn}} is a {{mobile app}} that I\'m currently developing to help you {{actually stay in touch}} with those you care about, {{even when geography isn\'t on your side}}.',
+    devSkills: ['React Native', 'Supabase', 'Twilio'],
+    designSkills: ['Figma', 'Rapid Prototyping'],
+    highlights: [
+      'A {{streamlined flow}} for {{starting check-ins}} and {{handling reschedules}}',
+      '{{Gentle}}, {{human reminders}} that show up in a {{shared group chat}}',
+      'Scheduling that {{adapts automatically}} to your {{calendar}} and {{calling habits}}'
+    ],
+    section: 'work'
+  },
   {
     title: 'Roboligent',
     description: 'A platform for robot management',
@@ -152,7 +233,8 @@ export const projects: Project[] = [
       'Interactive SLAM map and control panel for {{live robot control}}',
       'Drag-and-drop behavior tree builder for {{custom robot workflows}}',
       'My {{personal demos}} to investors contributed to {{$4m in funding}}'
-    ]
+    ],
+    section: 'work'
   },
   {
     title: 'Soar',
@@ -179,22 +261,19 @@ export const projects: Project[] = [
       'Seamless workflow for {{creating captions}}, {{building posts}}, and {{sharing to Instagram}}',
       '{{10+ paying customers}} saving ~{{2 hours per week}} on content creation',
       '{{100+}} customer discovery and product testing {{interviews}}'
-    ]
+    ],
+    section: 'work'
   },
   {
-    title: 'CheckIn',
-    description: 'A better way to keep in touch',
-    detail: 'Shipping soon',
+    title: 'Allrecipes.com',
+    description: 'Apply popular tweaks to recipes',
+    detail: 'Concept',
     thumbnail: 'https://via.placeholder.com/150',
-    caption:
-      'Ever said {{"We have to stay in touch!"}} and then never followed up? Inspired by my time away from campus interning last fall, {{CheckIn}} is a {{mobile app}} that I\'m currently developing to help you {{actually stay in touch}} with those you care about, {{even when geography isn\'t on your side}}.',
-    devSkills: ['React Native', 'Supabase', 'Twilio'],
-    designSkills: ['Figma', 'Rapid Prototyping'],
-    highlights: [
-      'A {{streamlined flow}} for {{starting check-ins}} and {{handling reschedules}}',
-      '{{Gentle}}, {{human reminders}} that show up in a {{shared group chat}}',
-      'Scheduling that {{adapts automatically}} to your {{calendar}} and {{calling habits}}'
-    ]
+    caption: 'Coming soon',
+    devSkills: [],
+    designSkills: [],
+    highlights: [],
+    section: 'playground'
   },
   {
     title: 'Stylistic',
@@ -209,7 +288,8 @@ export const projects: Project[] = [
       'Log daily outfits in seconds and build a {{true picture}} of what you {{actually wear}}',
       '{{Reality-check donation recommendations}} that you approve or deny as you scroll',
       'A ready-to-go donation basket with {{nearby drop-off locations}} for an {{easy donation run}}'
-    ]
+    ],
+    section: 'playground'
   },
   {
     title: '/tmp',
@@ -224,7 +304,8 @@ export const projects: Project[] = [
       'Drag-and-drop files into an {{ephemeral mini-filesystem}} that lives in the corner of your screen',
       'Recreate coding context with a {{GPT-ready markdown bundle}} of {{select folders + file contents}}',
       '{{One-click zip export}} when the context is too large to paste, for fast upload'
-    ]
+    ],
+    section: 'playground'
   },
   {
     title: 'Autonomous Car',
@@ -238,7 +319,8 @@ export const projects: Project[] = [
     highlights: [
       '{{YOLO}} traffic-light detection and decision making trained on {{5,000+ labeled images}} ({{98% accuracy}})',
       'Lane-line vision + PID steering control for {{stable lane keeping}}'
-    ]
+    ],
+    section: 'playground'
   },
   {
     title: 'Resistor Sorter',
@@ -257,7 +339,8 @@ export const projects: Project[] = [
       '{{Intuitive GUI}} to configure {{sorting logic}} and control the microcontroller over {{serial}}',
       '{{Arduino firmware}} for resistor measurement using {{muxed voltage dividers}}',
       '{{Servo-driven sorting}} mechanism with a {{custom conveyor}} and housing'
-    ]
+    ],
+    section: 'playground'
   },
   {
     title: 'Gravity Visualizer',
@@ -272,9 +355,13 @@ export const projects: Project[] = [
       'Drag planets around and watch {{gravitational field}} and {{potential graphs}} update in {{real time}}',
       '{{Customize planetary systems}} to explore how {{mass}} and {{distance}} shape gravitational relationships',
       'Adopted by my {{high school physics teacher}} to teach {{astrophysics concepts}} in class'
-    ]
+    ],
+    section: 'playground'
   }
 ]
+
+const workProjects = projects.filter(p => p.section === 'work')
+const playgroundProjects = projects.filter(p => p.section === 'playground')
 
 interface ProjectCardProps {
   project: Project
@@ -381,19 +468,54 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
     }
   }, [])
 
+  const workGridClass =
+    'grid grid-cols-1 min-[560px]:grid-cols-2 lg:grid-cols-4 gap-4'
+  const playgroundGridClass =
+    'grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'
+  const sectionTitleClass =
+    'font-primary text-2xl italic text-neutral-400 desktop:text-3xl'
+  const sectionTitleBarStackClass = 'flex flex-col gap-[14px]'
+
   return (
-    <div
-      ref={containerRef}
-      className='grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'
-    >
-      {projects.map((project, index) => (
-        <ProjectCard
-          key={index}
-          project={project}
-          onClick={() => onSelectProject(project)}
-          isCentered={animatingProject === project.title}
-        />
-      ))}
+    <div ref={containerRef} className='flex flex-col gap-12'>
+      <section className='flex flex-col gap-4'>
+        <div className={sectionTitleBarStackClass}>
+          <h2 className={sectionTitleClass}>WORK</h2>
+          <div
+            className='h-px w-full shrink-0 bg-neutral-600/50'
+            aria-hidden
+          />
+        </div>
+        <div className={workGridClass}>
+          {workProjects.map(project => (
+            <ProjectCard
+              key={project.title}
+              project={project}
+              onClick={() => onSelectProject(project)}
+              isCentered={animatingProject === project.title}
+            />
+          ))}
+        </div>
+      </section>
+      <section className='flex flex-col gap-4'>
+        <div className={sectionTitleBarStackClass}>
+          <h2 className={sectionTitleClass}>PLAY</h2>
+          <div
+            className='h-px w-full shrink-0 bg-neutral-600/50'
+            aria-hidden
+          />
+        </div>
+        <div className={playgroundGridClass}>
+          {playgroundProjects.map(project => (
+            <ProjectCard
+              key={project.title}
+              project={project}
+              onClick={() => onSelectProject(project)}
+              isCentered={animatingProject === project.title}
+            />
+          ))}
+        </div>
+      </section>
     </div>
   )
 }
