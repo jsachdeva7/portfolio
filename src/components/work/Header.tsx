@@ -3,7 +3,7 @@ export default function Header() {
     {
       year: '2026',
       company: 'Companyon Ventures',
-      position: 'Product Engineer Intern (Incoming)'
+      position: 'Incoming Product Engineer Intern'
     },
     {
       year: '2026',

@@ -8,7 +8,7 @@ import Soar from './assets/Soar.png'
 import Stylistic from './assets/Stylistic.png'
 import Tmp from './assets/Tmp.svg'
 import Allrecipes from './assets/Allrecipes.svg'
-import TF from './assets/TF.png'
+import TFLandscape from './assets/TFLandscape.png'
 
 export type ProjectSection = 'work' | 'playground'
 
@@ -39,13 +39,17 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   const animationClass = isInViewport
     ? 'animate-scale-once tablet:animate-none'
     : ''
+  const aspectClass =
+    project.section === 'work'
+      ? 'aspect-square tablet:aspect-800/520'
+      : 'aspect-square'
   if (project.title === 'Talking Fingers') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#e5ecf7] ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#e5ecf7] ${thumbFrameHoverGlow}`}
       >
         <img
-          src={TF.src}
+          src={TFLandscape.src}
           alt='Talking Fingers'
           className={`${thumbImgShadow} h-auto w-full rounded-2xl ${animationClass}`}
         />
@@ -56,7 +60,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Roboligent') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#0b2e5b] ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#0b2e5b] ${thumbFrameHoverGlow}`}
       >
         <img
           src={RMS.src}
@@ -70,7 +74,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'CheckIn') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-3xl bg-[#452f21] p-6 ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-3xl bg-[#452f21] p-6 ${thumbFrameHoverGlow}`}
       >
         <img
           src={CheckIn.src}
@@ -84,7 +88,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Stylistic') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-3xl bg-[#1c4a34] p-6 ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-3xl bg-[#1c4a34] p-6 ${thumbFrameHoverGlow}`}
       >
         <img
           src={Stylistic.src}
@@ -98,7 +102,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Soar') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#333333] p-6 ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#333333] p-6 ${thumbFrameHoverGlow}`}
       >
         <img
           src={Soar.src}
@@ -112,7 +116,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === '/tmp') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#1d2c49] ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#1d2c49] ${thumbFrameHoverGlow}`}
       >
         <img
           src={Tmp.src}
@@ -126,7 +130,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Gravity Visualizer') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#333333] ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#333333] ${thumbFrameHoverGlow}`}
       >
         <img
           src={Gravity.src}
@@ -140,7 +144,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Autonomous Car') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#39332d] ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#39332d] ${thumbFrameHoverGlow}`}
       >
         <img
           src={Autonomous.src}
@@ -154,7 +158,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Resistor Sorter') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#242b42] ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#242b42] ${thumbFrameHoverGlow}`}
       >
         <img
           src={Robotech.src}
@@ -168,7 +172,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Allrecipes.com') {
     return (
       <div
-        className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-[#964D36] ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#964D36] ${thumbFrameHoverGlow}`}
       >
         <img
           src={Allrecipes.src}
@@ -180,7 +184,9 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   }
 
   return (
-    <div className='aspect-square w-full overflow-hidden rounded-2xl bg-white' />
+    <div
+      className={`${aspectClass} w-full overflow-hidden rounded-2xl bg-white`}
+    />
   )
 }
 
@@ -470,8 +476,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
     }
   }, [])
 
-  const workGridClass =
-    'grid grid-cols-1 min-[560px]:grid-cols-2 lg:grid-cols-4 gap-4'
+  const workGridClass = 'grid grid-cols-1 min-[560px]:grid-cols-2 gap-6'
   const playgroundGridClass =
     'grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'
   const sectionTitleClass =
