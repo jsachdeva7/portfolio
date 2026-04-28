@@ -100,7 +100,7 @@ export default function Navbar() {
   ]
 
   return (
-    <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 flex w-full transform-gpu justify-center pt-3 [backface-visibility:hidden] [overflow-anchor:none] [will-change:transform]'>
+    <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 flex w-full transform-gpu justify-center pt-3 [will-change:transform] [backface-visibility:hidden] [overflow-anchor:none]'>
       <nav className='font-tertiary tablet:w-full tablet:justify-between tablet:rounded-none tablet:border-0 tablet:border-b tablet:border-white/5 tablet:bg-neutral-950/60 tablet:px-8 tablet:py-4 tablet:text-base flex transform-gpu flex-row items-center justify-center gap-8 rounded-full border border-white/10 bg-neutral-900/80 px-8 py-3.5 text-base font-medium backdrop-blur-xl [backface-visibility:hidden]'>
         <div className='tablet:flex hidden flex-row items-center gap-4'>
           <div>JAGAT SACHDEVA</div>
