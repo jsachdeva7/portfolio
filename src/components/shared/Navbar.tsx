@@ -7,6 +7,7 @@ const MAX_DURATION_MS = 1150
 const DURATION_PER_PX = 0.6
 const WORK_PLAY_EXTRA_SCROLL_PX = 72
 const DESKTOP_BREAKPOINT_PX = 1025
+let activeScrollAnimationFrame: number | null = null
 
 const easeOutExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t))
 
@@ -23,12 +24,24 @@ const getExtraSectionOffset = (hash: string) => {
 const getTargetTop = (element: HTMLElement, hash: string) => {
   const style = window.getComputedStyle(element)
   const scrollMarginTop = Number.parseFloat(style.scrollMarginTop) || 0
-  return (
+  const rawTarget =
     element.getBoundingClientRect().top +
     window.scrollY -
     scrollMarginTop +
     getExtraSectionOffset(hash)
-  )
+
+  const maxScrollY = document.documentElement.scrollHeight - window.innerHeight
+  return Math.min(maxScrollY, Math.max(0, rawTarget))
+}
+
+const getFrameScrollY = (value: number, targetY: number) => {
+  if (value < targetY) {
+    return Math.floor(value)
+  }
+  if (value > targetY) {
+    return Math.ceil(value)
+  }
+  return value
 }
 
 const getDuration = (distance: number) => {
@@ -37,6 +50,11 @@ const getDuration = (distance: number) => {
 }
 
 const smoothScrollToElement = (element: HTMLElement, hash: string) => {
+  if (activeScrollAnimationFrame) {
+    cancelAnimationFrame(activeScrollAnimationFrame)
+    activeScrollAnimationFrame = null
+  }
+
   const prefersReducedMotion = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
   ).matches
@@ -57,16 +75,21 @@ const smoothScrollToElement = (element: HTMLElement, hash: string) => {
     const elapsed = now - startTime
     const progress = Math.min(elapsed / duration, 1)
     const easedProgress = easeOutExpo(progress)
-    const currentY = Math.round(startY + distance * easedProgress)
+    const currentY =
+      progress === 1
+        ? targetY
+        : getFrameScrollY(startY + distance * easedProgress, targetY)
 
     window.scrollTo({ top: currentY, behavior: 'auto' })
 
     if (progress < 1) {
-      requestAnimationFrame(step)
+      activeScrollAnimationFrame = requestAnimationFrame(step)
+    } else {
+      activeScrollAnimationFrame = null
     }
   }
 
-  requestAnimationFrame(step)
+  activeScrollAnimationFrame = requestAnimationFrame(step)
 }
 
 export default function Navbar() {
@@ -77,8 +100,8 @@ export default function Navbar() {
   ]
 
   return (
-    <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 flex w-full justify-center pt-3'>
-      <nav className='font-tertiary tablet:w-full tablet:justify-between tablet:rounded-none tablet:border-0 tablet:border-b tablet:border-white/5 tablet:bg-neutral-950/60 tablet:px-8 tablet:py-4 tablet:text-base flex flex-row items-center justify-center gap-8 rounded-full border border-white/10 bg-neutral-900/80 px-8 py-3.5 text-base font-medium backdrop-blur-xl'>
+    <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 flex w-full transform-gpu justify-center pt-3 [backface-visibility:hidden] [overflow-anchor:none] [will-change:transform]'>
+      <nav className='font-tertiary tablet:w-full tablet:justify-between tablet:rounded-none tablet:border-0 tablet:border-b tablet:border-white/5 tablet:bg-neutral-950/60 tablet:px-8 tablet:py-4 tablet:text-base flex transform-gpu flex-row items-center justify-center gap-8 rounded-full border border-white/10 bg-neutral-900/80 px-8 py-3.5 text-base font-medium backdrop-blur-xl [backface-visibility:hidden]'>
         <div className='tablet:flex hidden flex-row items-center gap-4'>
           <div>JAGAT SACHDEVA</div>
           <div className='hidden text-[#A1A1A1] min-[420px]:block'>
