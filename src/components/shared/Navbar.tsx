@@ -79,7 +79,7 @@ export default function Navbar() {
   return (
     <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 flex w-full justify-center pt-3'>
       <nav className='font-tertiary tablet:w-full tablet:justify-between tablet:rounded-none tablet:border-0 tablet:border-b tablet:border-white/5 tablet:bg-neutral-950/60 tablet:px-8 tablet:py-4 tablet:text-base flex flex-row items-center justify-center gap-8 rounded-full border border-white/10 bg-neutral-900/80 px-8 py-3.5 text-base font-medium backdrop-blur-xl'>
-        <div className='flex flex-row items-center gap-4'>
+        <div className='tablet:flex hidden flex-row items-center gap-4'>
           <div>JAGAT SACHDEVA</div>
           <div className='hidden text-[#A1A1A1] min-[420px]:block'>
             PRODUCT ENGINEER

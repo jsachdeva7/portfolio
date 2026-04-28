@@ -28,7 +28,7 @@ export default function Home() {
         <img
           src={photosTogether.src}
           alt='Photos together'
-          className='tablet:max-w-[24rem] desktop:max-w-[36rem] w-full max-w-[18rem] rounded-2xl object-contain shadow-2xl'
+          className='tablet:max-w-[24rem] desktop:max-w-[36rem] w-full max-w-none rounded-2xl object-contain shadow-2xl'
         />
       </div>
 
