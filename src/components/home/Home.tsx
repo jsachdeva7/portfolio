@@ -1,11 +1,11 @@
 'use client'
 
+import MiniResume from '@/components/shared/MiniResume'
 import Link from 'next/link'
 import { useState } from 'react'
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { LuCheck, LuCopy } from 'react-icons/lu'
-import photosTogether from './assets/PhotosTogether.png'
 
 export default function Home() {
   const [copied, setCopied] = useState(false)
@@ -22,82 +22,76 @@ export default function Home() {
     }
   }
   return (
-    <div className='tablet:flex-row tablet:items-start tablet:justify-between tablet:pt-14 relative flex w-full flex-col gap-8 pt-16'>
-      {/* Images Section - on mobile: first/top, on tablet/desktop: absolute top-right */}
-      <div className='tablet:order-2 tablet:w-auto tablet:justify-end tablet:pt-0 tablet:pb-0 relative flex w-full justify-center pt-3 pb-11'>
-        <img
-          src={photosTogether.src}
-          alt='Photos together'
-          className='tablet:max-w-[24rem] desktop:max-w-[36rem] w-full max-w-none rounded-2xl object-contain shadow-2xl'
-        />
-      </div>
-
-      {/* Text Section - on mobile: second/bottom, on tablet/desktop: absolute bottom-left */}
-      <div className='tablet:order-1 tablet:w-1/2 flex flex-col gap-6'>
-        <h1 className='font-primary tablet:text-7xl mb-2 text-5xl'>
-          Hey, I&apos;m Jagat
-          <span className='tablet:text-[4.25rem] text-[2.875rem]'>!</span>
+    <div className='box-border flex h-dvh w-full flex-col justify-end p-6 tablet:p-16'>
+      <div className='flex w-full flex-col gap-9'>
+        <h1 className='font-primary tablet:text-6xl text-4xl'>
+          I’m a design engineer.
+     
+          <span className='tablet:text-[3.7rem] text-[2.25rem]'></span>
         </h1>
-        <p className='font-secondary tablet:text-xl tablet:mb-3 mb-6 text-lg text-neutral-400'>
-          I&apos;m a customer-first{' '}
-          <span className='text-white'>developer designer</span> and end-to-end{' '}
-          <span className='text-white'>product builder</span>.
-          <br />
-          <br />
-          Most recently, I was a{' '}
-          <span className='text-white'>SWE + Product Intern</span> at an
-          Austin-based robotics startup and a{' '}
-          <span className='text-white'>Georgia Tech CREATE-X Founder</span>.
-          <br />
-          <br />I hope you enjoy your time here! Feel free to reach out at{' '}
-          <span className='inline-flex items-center gap-2 text-white'>
-            jagatsachdeva@gmail.com
-            <button
-              onClick={handleCopyEmail}
-              className='cursor-pointer transition-colors active:scale-95'
-              aria-label='Copy email to clipboard'
-            >
-              {copied ? (
-                <LuCheck className='size-5 cursor-default! text-neutral-400' />
-              ) : (
-                <LuCopy className='size-4 text-neutral-400 hover:text-white' />
-              )}
-            </button>
-          </span>
-        </p>
-        <div className='tablet:justify-start tablet:space-x-6 flex items-center justify-center space-x-8'>
-          <Link
-            href='https://linkedin.com/in/jagat-sachdeva'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
-          >
-            <FaLinkedin />
-          </Link>
-          <Link
-            href='https://github.com/jsachdeva7'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
-          >
-            <FaGithub />
-          </Link>
-          <Link
-            href='https://x.com/JagatSachdeva'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
-          >
-            <FaXTwitter />
-          </Link>
-          <Link
-            href='https://www.instagram.com/jagatsachdeva/'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
-          >
-            <FaInstagram />
-          </Link>
+
+        <div className='tablet:flex-row tablet:items-start flex w-full flex-col gap-2 desktop:grid desktop:grid-cols-2 desktop:items-start desktop:gap-24'>
+          <div className='flex flex-col gap-9'>
+            <div className='font-secondary desktop:text-base flex flex-col gap-3 text-sm text-neutral-400 desktop:gap-3.5'>
+              <p>
+                I strive to build experiences that quietly slip into someone&apos;s
+                day and leave them feeling understood. Earning
+                that kind of trust guides everything I do.
+              </p>
+              <p>
+                I hope you enjoy your time here! Please reach out anytime at{' '}
+                <span className='inline-flex items-center gap-2 text-white'>
+                  jagatsachdeva05@gmail.com
+                  <button
+                    onClick={handleCopyEmail}
+                    className='cursor-pointer transition-colors active:scale-95'
+                    aria-label='Copy email to clipboard'
+                  >
+                    {copied ? (
+                      <LuCheck className='size-5 cursor-default! text-neutral-400' />
+                    ) : (
+                      <LuCopy className='size-4 text-neutral-400 hover:text-white' />
+                    )}
+                  </button>
+                </span>
+              </p>
+            </div>
+            <div className='tablet:justify-start tablet:space-x-6 flex items-center justify-center space-x-8'>
+              <Link
+                href='https://linkedin.com/in/jagat-sachdeva'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+              >
+                <FaLinkedin />
+              </Link>
+              <Link
+                href='https://github.com/jsachdeva7'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+              >
+                <FaGithub />
+              </Link>
+              <Link
+                href='https://x.com/JagatSachdeva'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+              >
+                <FaXTwitter />
+              </Link>
+              <Link
+                href='https://www.instagram.com/jagatsachdeva/'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+              >
+                <FaInstagram />
+              </Link>
+            </div>
+          </div>
+          <MiniResume />
         </div>
       </div>
     </div>

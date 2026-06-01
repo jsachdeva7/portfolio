@@ -25,18 +25,20 @@ export default function HomePage() {
   }, [selectedProject])
 
   return (
-    <main className='flex w-full flex-col gap-24'>
+    <main className='flex w-full flex-col gap-6 tablet:gap-16'>
       {selectedProject ? (
-        <ProjectArticle
-          project={selectedProject}
-          onBack={() => setSelectedProject(null)}
-        />
+        <div className='p-6 tablet:p-16'>
+          <ProjectArticle
+            project={selectedProject}
+            onBack={() => setSelectedProject(null)}
+          />
+        </div>
       ) : (
         <>
           <section id='about' className='w-full scroll-mt-28'>
             <Home />
           </section>
-          <section className='desktop:pt-0 pt-10'>
+          <section className='px-6 pb-6 tablet:px-16 tablet:pb-16'>
             <Projects onSelectProject={handleSelectProject} />
           </section>
         </>
