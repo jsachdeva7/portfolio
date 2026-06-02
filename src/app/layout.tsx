@@ -1,7 +1,7 @@
 import Navbar from '@/components/shared/Navbar'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Be_Vietnam_Pro, Cousine, Crimson_Pro } from 'next/font/google'
+import { Be_Vietnam_Pro, Roboto_Mono, Crimson_Pro } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -11,7 +11,7 @@ const crimsonPro = Crimson_Pro({
   display: 'swap'
 })
 
-const cousine = Cousine({
+const cousine = Roboto_Mono({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-cousine',
@@ -52,7 +52,6 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>
-          <Navbar />
           <div className='flex min-h-0 flex-1 flex-col'>
             {children}
           </div>

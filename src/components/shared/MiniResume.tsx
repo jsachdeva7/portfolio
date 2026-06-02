@@ -6,12 +6,12 @@ export interface WorkExperience {
 
 export const workExperience: WorkExperience[] = [
   {
-    year: '2026',
+    year: 'CURR',
     company: 'Companyon Ventures',
     position: 'Software Engineer Intern'
   },
   {
-    year: '2026',
+    year: 'CURR',
     company: 'GT iOS Club',
     position: 'Design Engineer'
   },
@@ -34,7 +34,7 @@ export default function MiniResume({
 }: MiniResumeProps) {
   return (
     <div
-      className={`font-secondary desktop:text-base grid w-fit max-w-full grid-cols-[2.5rem_auto_auto] gap-x-4 gap-y-1 text-sm desktop:gap-x-8 ${className}`}
+      className={`font-secondary desktop:text-sm grid w-fit max-w-full grid-cols-[2.5rem_auto_auto] gap-x-4 gap-y-1 text-sm desktop:gap-x-8 ${className}`}
     >
       {experiences.flatMap((work, index) => [
         <div key={`year-${index}`} className='font-tertiary text-neutral-400'>
