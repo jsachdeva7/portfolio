@@ -133,7 +133,7 @@ export default function Navbar() {
                 smoothScrollToElement(target, hash)
                 window.history.replaceState(null, '', `/#${hash}`)
               }}
-              className='italic tracking-wide text-[#A1A1A1] uppercase transition-colors hover:text-[#D0D0D0]'
+              className='italic font-medium tracking-wide text-[#A1A1A1] uppercase transition-colors hover:text-white'
             >
               {link.label}
             </Link>
