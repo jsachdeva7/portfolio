@@ -100,15 +100,20 @@ export default function Navbar() {
   ]
 
   return (
-    <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 flex w-full transform-gpu justify-center pt-3 [will-change:transform] [backface-visibility:hidden] [overflow-anchor:none]'>
-      <nav className='font-tertiary tablet:w-full tablet:justify-between tablet:rounded-none tablet:border-0 tablet:border-b tablet:border-white/5 tablet:bg-neutral-950/60 tablet:px-8 tablet:py-4 tablet:text-base flex transform-gpu flex-row items-center justify-center gap-8 rounded-full border border-white/10 bg-neutral-900/80 px-8 py-3.5 text-base font-medium backdrop-blur-xl [backface-visibility:hidden]'>
-        <div className='tablet:flex hidden flex-row items-center gap-4'>
-          <div>JAGAT SACHDEVA</div>
+    <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 pt-3 [overflow-anchor:none]'>
+      <div className='relative pb-12'>
+        <div
+          aria-hidden
+          className='navbar-scrim pointer-events-none absolute inset-x-0 top-0 bottom-0'
+        />
+        <nav className='font-primary relative flex flex-row items-center justify-center gap-8 rounded-full px-8 py-3.5 text-base font-medium tablet:w-full tablet:justify-between tablet:rounded-none tablet:px-8 tablet:py-4'>
+        <div className='tablet:flex hidden flex-row items-center gap-2'>
+          <div>jagat sachdeva</div>
           <div className='hidden text-[#A1A1A1] min-[420px]:block'>
-            PRODUCT ENGINEER
+            design engineer
           </div>
         </div>
-        <div className='flex flex-row items-center gap-8'>
+        <div className='flex flex-row items-center gap-5'>
           {navLinks.map(link => (
             <Link
               key={link.href}
@@ -128,13 +133,14 @@ export default function Navbar() {
                 smoothScrollToElement(target, hash)
                 window.history.replaceState(null, '', `/#${hash}`)
               }}
-              className='font-light tracking-wide text-[#A1A1A1] uppercase transition-colors hover:text-[#D0D0D0]'
+              className='italic tracking-wide text-[#A1A1A1] uppercase transition-colors hover:text-[#D0D0D0]'
             >
               {link.label}
             </Link>
           ))}
         </div>
       </nav>
+      </div>
     </div>
   )
 }

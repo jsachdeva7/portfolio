@@ -52,6 +52,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>
+          <Navbar />
           <div className='flex min-h-0 flex-1 flex-col'>
             {children}
           </div>
