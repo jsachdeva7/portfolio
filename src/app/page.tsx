@@ -35,7 +35,7 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          <section id='about' className='w-full scroll-mt-28'>
+          <section id='about' className='w-full scroll-mt-28 overflow-visible'>
             <Home />
           </section>
           <section className='px-6 pb-6 tablet:px-16 tablet:pb-16'>

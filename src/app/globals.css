@@ -221,3 +221,31 @@
 .animate-scale-once {
   animation: scale-once 0.3s ease-out;
 }
+
+/* Polaroid cursor trail: expand (120ms) → hold (500ms) → shrink + fade (220ms) @ 840ms total — keep in sync with Home.tsx */
+@keyframes polaroid-lifecycle {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+    animation-timing-function: ease-out;
+  }
+  14.29% {
+    transform: scale(1);
+    opacity: 1;
+    animation-timing-function: linear;
+  }
+  73.81% {
+    transform: scale(1);
+    opacity: 1;
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+.animate-polaroid-lifecycle {
+  animation-name: polaroid-lifecycle;
+  animation-fill-mode: forwards;
+}
