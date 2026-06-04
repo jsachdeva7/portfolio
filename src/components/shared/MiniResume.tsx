@@ -20,7 +20,7 @@ export const workExperience: WorkExperience[] = [
     company: 'Roboligent',
     position: 'Software Engineer Intern'
   },
-  { year: '2025', company: 'Soar', position: 'Founder & CREATE-X Fellow' },
+  { year: '2025', company: 'Soar', position: 'Founder & CREATE-X Fellow' }
 ]
 
 interface MiniResumeProps {
@@ -28,8 +28,7 @@ interface MiniResumeProps {
   experiences?: WorkExperience[]
 }
 
-const typography =
-  'font-secondary text-sm desktop:text-base'
+const typography = 'font-secondary text-sm desktop:text-base'
 
 export default function MiniResume({
   className = '',
@@ -51,7 +50,7 @@ export default function MiniResume({
         ))}
       </div>
 
-      <div className='tablet:grid hidden w-fit max-w-full grid-cols-[2.5rem_auto_auto] gap-x-4 gap-y-1 desktop:gap-x-8'>
+      <div className='tablet:grid desktop:gap-x-8 hidden w-fit max-w-full grid-cols-[2.5rem_auto_auto] gap-x-4 gap-y-1'>
         {experiences.flatMap((work, index) => [
           <div key={`year-${index}`} className='font-tertiary text-neutral-400'>
             {work.year}

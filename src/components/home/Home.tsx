@@ -53,11 +53,7 @@ const getPolaroidHalfDims = (mobile: boolean) =>
     ? { halfW: MOBILE_POLAROID_HALF_W, halfH: MOBILE_POLAROID_HALF_H }
     : { halfW: POLAROID_HALF_W, halfH: POLAROID_HALF_H }
 
-const getSpawnLimits = (
-  mobile: boolean,
-  boundsW: number,
-  boundsH: number
-) => {
+const getSpawnLimits = (mobile: boolean, boundsW: number, boundsH: number) => {
   const { halfW, halfH } = getPolaroidHalfDims(mobile)
   const pad = mobile ? MOBILE_SPAWN_EDGE_PAD : 0
   return {
@@ -109,7 +105,7 @@ const pickDispersedAmbientPosition = (
     ;[cellIndices[i], cellIndices[j]] = [cellIndices[j], cellIndices[i]]
   }
 
-  let chosenCell = cellIndices.find((i) => occupancy[i] === minOccupancy) ?? 0
+  let chosenCell = cellIndices.find(i => occupancy[i] === minOccupancy) ?? 0
   for (const i of cellIndices) {
     if (occupancy[i] === 0) {
       chosenCell = i
@@ -156,7 +152,7 @@ export default function Home() {
   )
 
   const removePolaroidById = useCallback((id: number) => {
-    setPolaroids((prev) => prev.filter((p) => p.id !== id))
+    setPolaroids(prev => prev.filter(p => p.id !== id))
   }, [])
 
   const clearAmbientTimer = useCallback((id: number) => {
@@ -167,10 +163,8 @@ export default function Home() {
 
   const startPolaroidExit = useCallback(
     (id: number) => {
-      setPolaroids((prev) =>
-        prev.map((p) =>
-          p.id === id && !p.exiting ? { ...p, exiting: true } : p
-        )
+      setPolaroids(prev =>
+        prev.map(p => (p.id === id && !p.exiting ? { ...p, exiting: true } : p))
       )
       setTimeout(() => removePolaroidById(id), POLAROID_EXIT_MS)
     },
@@ -190,16 +184,16 @@ export default function Home() {
   )
 
   const dismissAmbientPolaroids = useCallback(() => {
-    setPolaroids((prev) => {
-      const toDismiss = prev.filter((p) => p.holdUntilReplaced && !p.exiting)
+    setPolaroids(prev => {
+      const toDismiss = prev.filter(p => p.holdUntilReplaced && !p.exiting)
       if (toDismiss.length === 0) return prev
 
-      const exitIds = new Set(toDismiss.map((p) => p.id))
+      const exitIds = new Set(toDismiss.map(p => p.id))
       for (const p of toDismiss) {
         clearAmbientTimer(p.id)
         setTimeout(() => removePolaroidById(p.id), POLAROID_EXIT_MS)
       }
-      return prev.map((p) => (exitIds.has(p.id) ? { ...p, exiting: true } : p))
+      return prev.map(p => (exitIds.has(p.id) ? { ...p, exiting: true } : p))
     })
   }, [clearAmbientTimer, removePolaroidById])
 
@@ -224,23 +218,23 @@ export default function Home() {
           ? MOBILE_AMBIENT_VISIBLE_MS
           : DESKTOP_AMBIENT_VISIBLE_MS
 
-        setPolaroids((prev) => {
+        setPolaroids(prev => {
           const activeAmbient = prev.filter(
-            (p) => p.holdUntilReplaced && !p.exiting
+            p => p.holdUntilReplaced && !p.exiting
           )
           const toExitCount = Math.max(
             0,
             activeAmbient.length - (maxActive - 1)
           )
           const toExit = activeAmbient.slice(0, toExitCount)
-          const toExitIds = new Set(toExit.map((p) => p.id))
+          const toExitIds = new Set(toExit.map(p => p.id))
 
           for (const p of toExit) {
             clearAmbientTimer(p.id)
             setTimeout(() => removePolaroidById(p.id), POLAROID_EXIT_MS)
           }
 
-          const withExiting = prev.map((p) =>
+          const withExiting = prev.map(p =>
             toExitIds.has(p.id) ? { ...p, exiting: true } : p
           )
           return [
@@ -262,7 +256,7 @@ export default function Home() {
         return
       }
 
-      setPolaroids((prev) => [
+      setPolaroids(prev => [
         ...prev,
         { id, x, y, rotation, image, lifetimeMs: POLAROID_LIFETIME }
       ])
@@ -270,11 +264,7 @@ export default function Home() {
         removePolaroidById(id)
       }, POLAROID_LIFETIME)
     },
-    [
-      clearAmbientTimer,
-      removePolaroidById,
-      scheduleAmbientExpiry
-    ]
+    [clearAmbientTimer, removePolaroidById, scheduleAmbientExpiry]
   )
 
   const spawnPolaroidRef = useRef(spawnPolaroid)
@@ -348,11 +338,7 @@ export default function Home() {
       boundsH: number
     ) => {
       desktopAutoSpawnEnabledRef.current = false
-      if (
-        polaroidsRef.current.some(
-          (p) => p.holdUntilReplaced && !p.exiting
-        )
-      ) {
+      if (polaroidsRef.current.some(p => p.holdUntilReplaced && !p.exiting)) {
         dismissAmbientPolaroidsRef.current()
       }
       scheduleDesktopAutoSpawnResume()
@@ -483,7 +469,9 @@ export default function Home() {
     const mobileMq = window.matchMedia(
       `(max-width: ${TABLET_MIN_WIDTH_PX - 1}px)`
     )
-    const reducedMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const reducedMotionMq = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    )
     let intervalId: ReturnType<typeof setInterval> | undefined
 
     const spawnRandomPolaroid = (mobile: boolean) => {
@@ -564,73 +552,72 @@ export default function Home() {
   return (
     <div
       ref={containerRef}
-      className='relative box-border flex w-full flex-col overflow-visible p-6 tablet:h-dvh tablet:justify-end tablet:p-16'
+      className='tablet:h-dvh tablet:justify-end tablet:p-16 relative box-border flex w-full flex-col overflow-visible p-6'
     >
       <div
         ref={interactionBoundsRef}
-        className='relative z-[5] h-[50vh] min-h-[280px] max-h-[420px] w-full shrink-0 touch-none overflow-hidden tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink'
+        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-[5] h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-none overflow-hidden'
         aria-hidden
       >
-        <div className='pointer-events-none absolute inset-0 overflow-hidden tablet:overflow-visible'>
-        {polaroids.map((p) => (
-          <div
-            key={p.id}
-            className='absolute'
-            style={{
-              left: p.x,
-              top: p.y,
-              transform: `translate(-50%, -50%) rotate(${p.rotation}deg)`
-            }}
-          >
+        <div className='tablet:overflow-visible pointer-events-none absolute inset-0 overflow-hidden'>
+          {polaroids.map(p => (
             <div
-              className={
-                p.exiting
-                  ? 'animate-polaroid-exit origin-center'
-                  : p.holdUntilReplaced
-                    ? 'animate-polaroid-enter origin-center'
-                    : 'animate-polaroid-lifecycle origin-center'
-              }
+              key={p.id}
+              className='absolute'
               style={{
-                animationDuration: p.exiting
-                  ? `${POLAROID_EXIT_MS}ms`
-                  : p.holdUntilReplaced
-                    ? `${POLAROID_EXPAND_MS}ms`
-                    : `${p.lifetimeMs}ms`
+                left: p.x,
+                top: p.y,
+                transform: `translate(-50%, -50%) rotate(${p.rotation}deg)`
               }}
             >
-              <div className='flex flex-col rounded-xl bg-[color-mix(in_srgb,white_50%,var(--color-neutral-200))] p-2 pb-6 shadow-lg tablet:p-3 tablet:pb-10'>
-                <div className='relative size-32 overflow-hidden rounded-sm bg-neutral-200 tablet:size-40'>
-                  <Image
-                    src={p.image}
-                    alt=''
-                    fill
-                    sizes='(max-width: 767px) 128px, 160px'
-                    className='object-cover'
-                    draggable={false}
-                  />
+              <div
+                className={
+                  p.exiting
+                    ? 'animate-polaroid-exit origin-center'
+                    : p.holdUntilReplaced
+                      ? 'animate-polaroid-enter origin-center'
+                      : 'animate-polaroid-lifecycle origin-center'
+                }
+                style={{
+                  animationDuration: p.exiting
+                    ? `${POLAROID_EXIT_MS}ms`
+                    : p.holdUntilReplaced
+                      ? `${POLAROID_EXPAND_MS}ms`
+                      : `${p.lifetimeMs}ms`
+                }}
+              >
+                <div className='tablet:p-3 tablet:pb-10 flex flex-col rounded-xl bg-[color-mix(in_srgb,white_50%,var(--color-neutral-200))] p-2 pb-6 shadow-lg'>
+                  <div className='tablet:size-40 relative size-32 overflow-hidden rounded-sm bg-neutral-200'>
+                    <Image
+                      src={p.image}
+                      alt=''
+                      fill
+                      sizes='(max-width: 767px) 128px, 160px'
+                      className='object-cover'
+                      draggable={false}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
         </div>
       </div>
       <div
         ref={contentRef}
-        className='relative z-10 flex w-full flex-col gap-5 tablet:z-0 tablet:mt-0 tablet:gap-9'
+        className='tablet:z-0 tablet:mt-0 tablet:gap-9 relative z-10 flex w-full flex-col gap-5'
       >
         <h1 className='font-primary tablet:text-6xl text-4xl'>
           I’m a design engineer.
-     
           <span className='tablet:text-[3.7rem] text-[2.25rem]'></span>
         </h1>
 
-        <div className='tablet:flex-row tablet:items-start flex w-full flex-col gap-10 desktop:grid desktop:grid-cols-2 desktop:items-start desktop:gap-24'>
-          <div className='font-secondary desktop:text-base mb-4 flex flex-col gap-3 text-sm text-neutral-400 tablet:mb-0 desktop:gap-3.5'>
+        <div className='tablet:flex-row tablet:items-start desktop:grid desktop:grid-cols-2 desktop:items-start desktop:gap-24 flex w-full flex-col gap-10'>
+          <div className='font-secondary desktop:text-base tablet:mb-0 desktop:gap-3.5 mb-4 flex flex-col gap-3 text-sm text-neutral-400'>
             <p>
-              I strive to build experiences that quietly slip into someone&apos;s
-              day and leave them feeling understood. Earning
-              that kind of trust guides everything I do.
+              I strive to build experiences that quietly slip into
+              someone&apos;s day and leave them feeling understood. Earning that
+              kind of trust guides everything I do.
             </p>
             <p>
               I hope you enjoy your time here. Please reach out anytime at{' '}
@@ -655,38 +642,38 @@ export default function Home() {
           </div>
         </div>
         <div className='tablet:justify-start tablet:space-x-6 flex items-center justify-center space-x-8'>
-              <Link
-                href='https://linkedin.com/in/jagat-sachdeva'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
-              >
-                <FaLinkedin />
-              </Link>
-              <Link
-                href='https://github.com/jsachdeva7'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
-              >
-                <FaGithub />
-              </Link>
-              <Link
-                href='https://x.com/JagatSachdeva'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
-              >
-                <FaXTwitter />
-              </Link>
-              <Link
-                href='https://www.instagram.com/jagatsachdeva/'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
-              >
-                <FaInstagram />
-              </Link>
+          <Link
+            href='https://linkedin.com/in/jagat-sachdeva'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+          >
+            <FaLinkedin />
+          </Link>
+          <Link
+            href='https://github.com/jsachdeva7'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+          >
+            <FaGithub />
+          </Link>
+          <Link
+            href='https://x.com/JagatSachdeva'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+          >
+            <FaXTwitter />
+          </Link>
+          <Link
+            href='https://www.instagram.com/jagatsachdeva/'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
+          >
+            <FaInstagram />
+          </Link>
         </div>
       </div>
     </div>
