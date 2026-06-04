@@ -46,7 +46,8 @@ const POLAROID_HALF_H = 106
 const MOBILE_POLAROID_HALF_W = 72
 /** Includes frame + max rotation so clamps keep the full card inside the stage. */
 const MOBILE_POLAROID_HALF_H = 96
-const MOBILE_SPAWN_EDGE_PAD = 16
+/** Mobile: inset only along the bottom edge of the stage. */
+const MOBILE_SPAWN_BOTTOM_PAD = 0
 
 const getPolaroidHalfDims = (mobile: boolean) =>
   mobile
@@ -55,12 +56,19 @@ const getPolaroidHalfDims = (mobile: boolean) =>
 
 const getSpawnLimits = (mobile: boolean, boundsW: number, boundsH: number) => {
   const { halfW, halfH } = getPolaroidHalfDims(mobile)
-  const pad = mobile ? MOBILE_SPAWN_EDGE_PAD : 0
+  if (mobile) {
+    return {
+      minX: 0,
+      maxX: boundsW,
+      minY: 0,
+      maxY: boundsH - halfH - MOBILE_SPAWN_BOTTOM_PAD
+    }
+  }
   return {
-    minX: halfW + pad,
-    maxX: boundsW - halfW - pad,
-    minY: halfH + pad,
-    maxY: boundsH - halfH - pad
+    minX: halfW,
+    maxX: boundsW - halfW,
+    minY: halfH,
+    maxY: boundsH - halfH
   }
 }
 
@@ -574,10 +582,10 @@ export default function Home() {
     >
       <div
         ref={interactionBoundsRef}
-        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-[5] h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-none overflow-hidden'
+        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-[5] h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-none overflow-visible'
         aria-hidden
       >
-        <div className='tablet:overflow-visible pointer-events-none absolute inset-0 overflow-hidden'>
+        <div className='pointer-events-none absolute inset-0 overflow-visible'>
           {polaroids.map(p => (
             <div
               key={p.id}
