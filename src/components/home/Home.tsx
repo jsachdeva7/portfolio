@@ -272,6 +272,24 @@ export default function Home() {
   spawnPolaroidRef.current = spawnPolaroid
   dismissAmbientPolaroidsRef.current = dismissAmbientPolaroids
 
+  // Warm the browser cache with every polaroid up front so each pop renders
+  // instantly instead of triggering a network fetch on spawn. Assets are served
+  // with immutable cache headers, so this only ever fetches each image once.
+  useEffect(() => {
+    const preloaders = polaroidImages.map(({ src }) => {
+      const img = new window.Image()
+      img.decoding = 'async'
+      img.src = src
+      return img
+    })
+    return () => {
+      // Drop refs so the GC can reclaim them; cached bytes stay in the HTTP cache.
+      preloaders.forEach(img => {
+        img.src = ''
+      })
+    }
+  }, [])
+
   useEffect(() => {
     const container = containerRef.current
     const content = contentRef.current
