@@ -100,18 +100,16 @@ export default function Navbar() {
   ]
 
   return (
-    <div className='tablet:pt-0 fixed inset-x-0 top-0 z-50 pt-3 [overflow-anchor:none]'>
+    <div className='pointer-events-none fixed inset-x-0 top-0 z-50 [overflow-anchor:none]'>
       <div className='relative pb-12'>
         <div
           aria-hidden
           className='navbar-scrim pointer-events-none absolute inset-x-0 top-0 bottom-0'
         />
-        <nav className='font-primary relative flex flex-row items-center justify-center gap-8 rounded-full px-8 py-3.5 text-base font-medium tablet:w-full tablet:justify-between tablet:rounded-none tablet:px-8 tablet:py-4'>
-        <div className='tablet:flex hidden flex-row items-center gap-2'>
+        <nav className='font-primary pointer-events-auto relative flex w-full flex-row items-center justify-between gap-4 px-6 py-3.5 text-base font-medium tablet:px-8 tablet:py-4'>
+        <div className='flex flex-col items-start leading-tight tablet:flex-row tablet:items-center tablet:gap-2'>
           <div>jagat sachdeva</div>
-          <div className='hidden text-[#A1A1A1] min-[420px]:block'>
-            design engineer
-          </div>
+          <div className='hidden text-[#A1A1A1] tablet:block'>design engineer</div>
         </div>
         <div className='flex flex-row items-center gap-5'>
           {navLinks.map(link => (

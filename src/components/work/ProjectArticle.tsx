@@ -14,8 +14,9 @@ export default function ProjectArticle({
   return (
     <div className='tablet:gap-16 tablet:pt-14 flex flex-col gap-8 pt-16'>
       <button
+        type='button'
         onClick={onBack}
-        className='font-tertiary tablet:fixed tablet:top-20 tablet:left-8 tablet:z-40 flex items-center gap-2 text-neutral-400 uppercase transition-colors hover:text-white'
+        className='font-tertiary relative z-[60] flex items-center gap-2 text-neutral-400 uppercase transition-colors hover:text-white tablet:fixed tablet:top-20 tablet:left-8'
       >
         <LuArrowLeft />
         Back

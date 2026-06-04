@@ -28,25 +28,42 @@ interface MiniResumeProps {
   experiences?: WorkExperience[]
 }
 
+const typography =
+  'font-secondary text-sm desktop:text-base'
+
 export default function MiniResume({
   className = '',
   experiences = workExperience
 }: MiniResumeProps) {
   return (
-    <div
-      className={`font-secondary desktop:text-sm grid w-fit max-w-full grid-cols-[2.5rem_auto_auto] gap-x-4 gap-y-1 text-sm desktop:gap-x-8 ${className}`}
-    >
-      {experiences.flatMap((work, index) => [
-        <div key={`year-${index}`} className='font-tertiary text-neutral-400'>
-          {work.year}
-        </div>,
-        <div key={`company-${index}`} className='text-white'>
-          {work.company}
-        </div>,
-        <div key={`position-${index}`} className='text-neutral-400'>
-          {work.position}
-        </div>
-      ])}
+    <div className={`w-fit max-w-full ${typography} ${className}`}>
+      <div className='tablet:hidden flex flex-col gap-4'>
+        {experiences.map((work, index) => (
+          <div key={index} className='flex flex-col gap-1'>
+            <div className='flex gap-4'>
+              <span className='font-tertiary w-10 shrink-0 text-neutral-400'>
+                {work.year}
+              </span>
+              <span className='text-white'>{work.company}</span>
+            </div>
+            <p className='pl-14 text-neutral-400'>{work.position}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className='tablet:grid hidden w-fit max-w-full grid-cols-[2.5rem_auto_auto] gap-x-4 gap-y-1 desktop:gap-x-8'>
+        {experiences.flatMap((work, index) => [
+          <div key={`year-${index}`} className='font-tertiary text-neutral-400'>
+            {work.year}
+          </div>,
+          <div key={`company-${index}`} className='text-white'>
+            {work.company}
+          </div>,
+          <div key={`position-${index}`} className='text-neutral-400'>
+            {work.position}
+          </div>
+        ])}
+      </div>
     </div>
   )
 }

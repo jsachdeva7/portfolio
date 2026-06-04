@@ -15,23 +15,132 @@ interface Polaroid {
   y: number
   rotation: number
   image: StaticImageData
+  lifetimeMs: number
+  exiting?: boolean
+  /** Ambient pops: hold until replaced (overlap stack). */
+  holdUntilReplaced?: boolean
 }
 
 // Pixels of cursor travel between each dropped polaroid.
 const SPAWN_DISTANCE = 150
+const MOBILE_SPAWN_INTERVAL_MS = 750
+const DESKTOP_AUTO_SPAWN_INTERVAL_MS = 750
+/** Resume ambient pops after the cursor stops moving in the polaroid zone. */
+const POINTER_IDLE_MS = 2800
+const DESKTOP_AMBIENT_MAX_ACTIVE = 10
+const MOBILE_AMBIENT_MAX_ACTIVE = 10
+const TABLET_MIN_WIDTH_PX = 768
 const POLAROID_EXPAND_MS = 120
 const POLAROID_HOLD_MS = 500
 const POLAROID_EXIT_MS = 220
-// Total lifetime; keyframe % in globals.css (8%, 41.33%) must match these durations.
 const POLAROID_LIFETIME =
   POLAROID_EXPAND_MS + POLAROID_HOLD_MS + POLAROID_EXIT_MS
-// Half-size estimate so polaroids stay inside the padded interaction bounds.
+/** Desktop ambient stack: photos exit when the next one pushes past max (no timer). */
+const DESKTOP_AMBIENT_VISIBLE_MS = POLAROID_EXPAND_MS
+/** Mobile ambient: timer hold before exit (overlap also caps count). */
+const MOBILE_AMBIENT_HOLD_MS = 5000
+const MOBILE_AMBIENT_VISIBLE_MS = POLAROID_EXPAND_MS + MOBILE_AMBIENT_HOLD_MS
+// Half-size estimates so polaroids stay inside the interaction bounds.
 const POLAROID_HALF_W = 92
 const POLAROID_HALF_H = 106
+const MOBILE_POLAROID_HALF_W = 72
+/** Includes frame + max rotation so clamps keep the full card inside the stage. */
+const MOBILE_POLAROID_HALF_H = 96
+const MOBILE_SPAWN_EDGE_PAD = 16
+
+const getPolaroidHalfDims = (mobile: boolean) =>
+  mobile
+    ? { halfW: MOBILE_POLAROID_HALF_W, halfH: MOBILE_POLAROID_HALF_H }
+    : { halfW: POLAROID_HALF_W, halfH: POLAROID_HALF_H }
+
+const getSpawnLimits = (
+  mobile: boolean,
+  boundsW: number,
+  boundsH: number
+) => {
+  const { halfW, halfH } = getPolaroidHalfDims(mobile)
+  const pad = mobile ? MOBILE_SPAWN_EDGE_PAD : 0
+  return {
+    minX: halfW + pad,
+    maxX: boundsW - halfW - pad,
+    minY: halfH + pad,
+    maxY: boundsH - halfH - pad
+  }
+}
+
+/** Place each ambient pop in the least-crowded grid cell so photos spread across the stage. */
+const pickDispersedAmbientPosition = (
+  mobile: boolean,
+  boundsW: number,
+  boundsH: number,
+  existing: Polaroid[]
+) => {
+  const { minX, maxX, minY, maxY } = getSpawnLimits(mobile, boundsW, boundsH)
+  const width = maxX - minX
+  const height = maxY - minY
+  if (width <= 0 || height <= 0) {
+    return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 }
+  }
+
+  const cols = mobile ? 3 : 5
+  const rows = mobile ? 4 : 2
+  const cellW = width / cols
+  const cellH = height / rows
+  const cellCount = cols * rows
+
+  const occupancy = Array<number>(cellCount).fill(0)
+  for (const p of existing) {
+    if (!p.holdUntilReplaced) continue
+    const col = Math.min(
+      cols - 1,
+      Math.max(0, Math.floor((p.x - minX) / cellW))
+    )
+    const row = Math.min(
+      rows - 1,
+      Math.max(0, Math.floor((p.y - minY) / cellH))
+    )
+    occupancy[row * cols + col] += 1
+  }
+
+  const minOccupancy = Math.min(...occupancy)
+  const cellIndices = Array.from({ length: cellCount }, (_, i) => i)
+  for (let i = cellIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[cellIndices[i], cellIndices[j]] = [cellIndices[j], cellIndices[i]]
+  }
+
+  let chosenCell = cellIndices.find((i) => occupancy[i] === minOccupancy) ?? 0
+  for (const i of cellIndices) {
+    if (occupancy[i] === 0) {
+      chosenCell = i
+      break
+    }
+  }
+
+  const col = chosenCell % cols
+  const row = Math.floor(chosenCell / cols)
+  const insetX = cellW * 0.12
+  const insetY = cellH * 0.12
+
+  return {
+    x:
+      minX +
+      col * cellW +
+      insetX +
+      Math.random() * Math.max(0, cellW - insetX * 2),
+    y:
+      minY +
+      row * cellH +
+      insetY +
+      Math.random() * Math.max(0, cellH - insetY * 2)
+  }
+}
 
 export default function Home() {
   const [copied, setCopied] = useState(false)
   const [polaroids, setPolaroids] = useState<Polaroid[]>([])
+  const polaroidsRef = useRef<Polaroid[]>([])
+  polaroidsRef.current = polaroids
 
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -40,18 +149,138 @@ export default function Home() {
   const distanceRef = useRef(0)
   const nextIdRef = useRef(0)
   const imageIndexRef = useRef(0)
+  const pointerActiveRef = useRef(false)
+  const desktopAutoSpawnEnabledRef = useRef(true)
+  const ambientExpiryTimersRef = useRef(
+    new Map<number, ReturnType<typeof setTimeout>>()
+  )
 
-  const spawnPolaroid = useCallback((x: number, y: number) => {
-    const id = nextIdRef.current++
-    const rotation = Math.random() * 40 - 20
-    const image =
-      polaroidImages[imageIndexRef.current % polaroidImages.length]
-    imageIndexRef.current += 1
-    setPolaroids((prev) => [...prev, { id, x, y, rotation, image }])
-    setTimeout(() => {
-      setPolaroids((prev) => prev.filter((p) => p.id !== id))
-    }, POLAROID_LIFETIME)
+  const removePolaroidById = useCallback((id: number) => {
+    setPolaroids((prev) => prev.filter((p) => p.id !== id))
   }, [])
+
+  const clearAmbientTimer = useCallback((id: number) => {
+    const timer = ambientExpiryTimersRef.current.get(id)
+    if (timer) clearTimeout(timer)
+    ambientExpiryTimersRef.current.delete(id)
+  }, [])
+
+  const startPolaroidExit = useCallback(
+    (id: number) => {
+      setPolaroids((prev) =>
+        prev.map((p) =>
+          p.id === id && !p.exiting ? { ...p, exiting: true } : p
+        )
+      )
+      setTimeout(() => removePolaroidById(id), POLAROID_EXIT_MS)
+    },
+    [removePolaroidById]
+  )
+
+  const scheduleAmbientExpiry = useCallback(
+    (id: number, visibleMs: number) => {
+      clearAmbientTimer(id)
+      const timer = setTimeout(() => {
+        ambientExpiryTimersRef.current.delete(id)
+        startPolaroidExit(id)
+      }, visibleMs)
+      ambientExpiryTimersRef.current.set(id, timer)
+    },
+    [clearAmbientTimer, startPolaroidExit]
+  )
+
+  const dismissAmbientPolaroids = useCallback(() => {
+    setPolaroids((prev) => {
+      const toDismiss = prev.filter((p) => p.holdUntilReplaced && !p.exiting)
+      if (toDismiss.length === 0) return prev
+
+      const exitIds = new Set(toDismiss.map((p) => p.id))
+      for (const p of toDismiss) {
+        clearAmbientTimer(p.id)
+        setTimeout(() => removePolaroidById(p.id), POLAROID_EXIT_MS)
+      }
+      return prev.map((p) => (exitIds.has(p.id) ? { ...p, exiting: true } : p))
+    })
+  }, [clearAmbientTimer, removePolaroidById])
+
+  const spawnPolaroid = useCallback(
+    (
+      x: number,
+      y: number,
+      kind: 'ambient' | 'trail' = 'ambient',
+      mobile = window.innerWidth < TABLET_MIN_WIDTH_PX
+    ) => {
+      const id = nextIdRef.current++
+      const rotation = Math.random() * 40 - 20
+      const image =
+        polaroidImages[imageIndexRef.current % polaroidImages.length]
+      imageIndexRef.current += 1
+
+      if (kind === 'ambient') {
+        const maxActive = mobile
+          ? MOBILE_AMBIENT_MAX_ACTIVE
+          : DESKTOP_AMBIENT_MAX_ACTIVE
+        const ambientVisibleMs = mobile
+          ? MOBILE_AMBIENT_VISIBLE_MS
+          : DESKTOP_AMBIENT_VISIBLE_MS
+
+        setPolaroids((prev) => {
+          const activeAmbient = prev.filter(
+            (p) => p.holdUntilReplaced && !p.exiting
+          )
+          const toExitCount = Math.max(
+            0,
+            activeAmbient.length - (maxActive - 1)
+          )
+          const toExit = activeAmbient.slice(0, toExitCount)
+          const toExitIds = new Set(toExit.map((p) => p.id))
+
+          for (const p of toExit) {
+            clearAmbientTimer(p.id)
+            setTimeout(() => removePolaroidById(p.id), POLAROID_EXIT_MS)
+          }
+
+          const withExiting = prev.map((p) =>
+            toExitIds.has(p.id) ? { ...p, exiting: true } : p
+          )
+          return [
+            ...withExiting,
+            {
+              id,
+              x,
+              y,
+              rotation,
+              image,
+              lifetimeMs: ambientVisibleMs,
+              holdUntilReplaced: true
+            }
+          ]
+        })
+        if (mobile) {
+          scheduleAmbientExpiry(id, ambientVisibleMs)
+        }
+        return
+      }
+
+      setPolaroids((prev) => [
+        ...prev,
+        { id, x, y, rotation, image, lifetimeMs: POLAROID_LIFETIME }
+      ])
+      setTimeout(() => {
+        removePolaroidById(id)
+      }, POLAROID_LIFETIME)
+    },
+    [
+      clearAmbientTimer,
+      removePolaroidById,
+      scheduleAmbientExpiry
+    ]
+  )
+
+  const spawnPolaroidRef = useRef(spawnPolaroid)
+  const dismissAmbientPolaroidsRef = useRef(dismissAmbientPolaroids)
+  spawnPolaroidRef.current = spawnPolaroid
+  dismissAmbientPolaroidsRef.current = dismissAmbientPolaroids
 
   useEffect(() => {
     const container = containerRef.current
@@ -60,11 +289,20 @@ export default function Home() {
     if (!container || !content || !interactionBounds) return
 
     const updateInteractionBounds = () => {
+      const mobile = window.innerWidth < TABLET_MIN_WIDTH_PX
+      if (mobile) {
+        interactionBounds.style.left = ''
+        interactionBounds.style.width = ''
+        interactionBounds.style.height = ''
+        return
+      }
+
       const containerRect = container.getBoundingClientRect()
       const contentRect = content.getBoundingClientRect()
+      const safeInset = 16
       interactionBounds.style.left = `${contentRect.left - containerRect.left}px`
       interactionBounds.style.width = `${contentRect.width}px`
-      interactionBounds.style.height = `${Math.max(0, contentRect.top - containerRect.top)}px`
+      interactionBounds.style.height = `${Math.max(0, contentRect.top - containerRect.top - safeInset)}px`
     }
 
     updateInteractionBounds()
@@ -76,13 +314,72 @@ export default function Home() {
     const clamp = (value: number, min: number, max: number) =>
       Math.min(Math.max(value, min), max)
 
-    const handleMouseMove = (e: MouseEvent) => {
+    let pointerIdleTimeoutId: ReturnType<typeof setTimeout> | undefined
+
+    const scheduleDesktopAutoSpawnResume = () => {
+      if (window.innerWidth < TABLET_MIN_WIDTH_PX) return
+      clearTimeout(pointerIdleTimeoutId)
+      pointerIdleTimeoutId = setTimeout(() => {
+        desktopAutoSpawnEnabledRef.current = true
+      }, POINTER_IDLE_MS)
+    }
+
+    const spawnDesktopTrailAt = (
+      x: number,
+      y: number,
+      boundsW: number,
+      boundsH: number
+    ) => {
+      const { minX, maxX, minY, maxY } = getSpawnLimits(false, boundsW, boundsH)
+      if (maxX <= minX || maxY <= minY) return
+      spawnPolaroidRef.current(
+        clamp(x, minX, maxX),
+        clamp(y, minY, maxY),
+        'trail',
+        false
+      )
+    }
+
+    /** First trail pop as soon as the cursor leaves auto-spawn (no extra travel). */
+    const engageDesktopTrail = (
+      x: number,
+      y: number,
+      boundsW: number,
+      boundsH: number
+    ) => {
+      desktopAutoSpawnEnabledRef.current = false
+      if (
+        polaroidsRef.current.some(
+          (p) => p.holdUntilReplaced && !p.exiting
+        )
+      ) {
+        dismissAmbientPolaroidsRef.current()
+      }
+      scheduleDesktopAutoSpawnResume()
+      spawnDesktopTrailAt(x, y, boundsW, boundsH)
+      distanceRef.current = 0
+      lastPosRef.current = { x, y }
+    }
+
+    const handlePointerEnter = (e: PointerEvent) => {
+      if (window.innerWidth < TABLET_MIN_WIDTH_PX) return
+      if (e.pointerType !== 'mouse') return
+      const boundsRect = interactionBounds.getBoundingClientRect()
+      lastPosRef.current = {
+        x: e.clientX - boundsRect.left,
+        y: e.clientY - boundsRect.top
+      }
+      distanceRef.current = 0
+    }
+
+    const handlePointerMove = (e: PointerEvent) => {
       const boundsRect = interactionBounds.getBoundingClientRect()
       const boundsW = boundsRect.width
       const boundsH = boundsRect.height
+      const mobile = window.innerWidth < TABLET_MIN_WIDTH_PX
 
-      // Ignore movement while a button is held (dragging / selecting).
-      if (e.buttons !== 0) {
+      // Ignore mouse movement while a button is held (dragging / selecting), not touch.
+      if (e.pointerType === 'mouse' && e.buttons !== 0) {
         lastPosRef.current = {
           x: e.clientX - boundsRect.left,
           y: e.clientY - boundsRect.top
@@ -95,38 +392,163 @@ export default function Home() {
 
       const last = lastPosRef.current
       if (!last) {
-        lastPosRef.current = { x, y }
+        if (
+          !mobile &&
+          e.pointerType === 'mouse' &&
+          desktopAutoSpawnEnabledRef.current
+        ) {
+          engageDesktopTrail(x, y, boundsW, boundsH)
+        } else {
+          lastPosRef.current = { x, y }
+        }
         return
       }
 
       const dx = x - last.x
       const dy = y - last.y
+      if (dx === 0 && dy === 0) return
+
+      if (
+        !mobile &&
+        e.pointerType === 'mouse' &&
+        desktopAutoSpawnEnabledRef.current
+      ) {
+        engageDesktopTrail(x, y, boundsW, boundsH)
+        return
+      }
+
       distanceRef.current += Math.hypot(dx, dy)
       lastPosRef.current = { x, y }
 
       if (distanceRef.current >= SPAWN_DISTANCE) {
         distanceRef.current = 0
-        spawnPolaroid(
-          clamp(x, POLAROID_HALF_W, boundsW - POLAROID_HALF_W),
-          clamp(y, POLAROID_HALF_H, boundsH - POLAROID_HALF_H)
-        )
+        if (mobile) {
+          const { minX, maxX, minY, maxY } = getSpawnLimits(
+            true,
+            boundsW,
+            boundsH
+          )
+          if (maxX <= minX || maxY <= minY) return
+          spawnPolaroidRef.current(
+            clamp(x, minX, maxX),
+            clamp(y, minY, maxY),
+            'ambient',
+            true
+          )
+        } else {
+          spawnDesktopTrailAt(x, y, boundsW, boundsH)
+        }
       }
     }
 
-    const handleMouseLeave = () => {
+    const handlePointerLeave = () => {
+      lastPosRef.current = null
+      distanceRef.current = 0
+      scheduleDesktopAutoSpawnResume()
+    }
+
+    const handlePointerDown = () => {
+      pointerActiveRef.current = true
+    }
+
+    const handlePointerUp = () => {
+      pointerActiveRef.current = false
       lastPosRef.current = null
       distanceRef.current = 0
     }
 
-    interactionBounds.addEventListener('mousemove', handleMouseMove)
-    interactionBounds.addEventListener('mouseleave', handleMouseLeave)
+    interactionBounds.addEventListener('pointerenter', handlePointerEnter)
+    interactionBounds.addEventListener('pointermove', handlePointerMove)
+    interactionBounds.addEventListener('pointerleave', handlePointerLeave)
+    interactionBounds.addEventListener('pointerdown', handlePointerDown)
+    interactionBounds.addEventListener('pointerup', handlePointerUp)
+    interactionBounds.addEventListener('pointercancel', handlePointerUp)
     return () => {
+      clearTimeout(pointerIdleTimeoutId)
       resizeObserver.disconnect()
       window.removeEventListener('resize', updateInteractionBounds)
-      interactionBounds.removeEventListener('mousemove', handleMouseMove)
-      interactionBounds.removeEventListener('mouseleave', handleMouseLeave)
+      interactionBounds.removeEventListener('pointerenter', handlePointerEnter)
+      interactionBounds.removeEventListener('pointermove', handlePointerMove)
+      interactionBounds.removeEventListener('pointerleave', handlePointerLeave)
+      interactionBounds.removeEventListener('pointerdown', handlePointerDown)
+      interactionBounds.removeEventListener('pointerup', handlePointerUp)
+      interactionBounds.removeEventListener('pointercancel', handlePointerUp)
     }
-  }, [spawnPolaroid])
+  }, [])
+
+  useEffect(() => {
+    const interactionBounds = interactionBoundsRef.current
+    if (!interactionBounds) return
+
+    const mobileMq = window.matchMedia(
+      `(max-width: ${TABLET_MIN_WIDTH_PX - 1}px)`
+    )
+    const reducedMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let intervalId: ReturnType<typeof setInterval> | undefined
+
+    const spawnRandomPolaroid = (mobile: boolean) => {
+      const boundsW = interactionBounds.offsetWidth
+      const boundsH = interactionBounds.offsetHeight
+      const { minX, maxX, minY, maxY } = getSpawnLimits(
+        mobile,
+        boundsW,
+        boundsH
+      )
+      if (maxX <= minX || maxY <= minY) return
+      if (pointerActiveRef.current) return
+
+      const { x, y } = pickDispersedAmbientPosition(
+        mobile,
+        boundsW,
+        boundsH,
+        polaroidsRef.current
+      )
+      spawnPolaroidRef.current(x, y, 'ambient', mobile)
+    }
+
+    const tick = () => {
+      if (reducedMotionMq.matches) return
+      if (mobileMq.matches) {
+        spawnRandomPolaroid(true)
+        return
+      }
+      if (!desktopAutoSpawnEnabledRef.current) return
+      spawnRandomPolaroid(false)
+    }
+
+    const start = () => {
+      clearInterval(intervalId)
+      if (reducedMotionMq.matches) return
+      const ms = mobileMq.matches
+        ? MOBILE_SPAWN_INTERVAL_MS
+        : DESKTOP_AUTO_SPAWN_INTERVAL_MS
+      intervalId = setInterval(tick, ms)
+    }
+
+    const stop = () => {
+      clearInterval(intervalId)
+      intervalId = undefined
+    }
+
+    const handleMqChange = () => {
+      stop()
+      desktopAutoSpawnEnabledRef.current = true
+      if (mobileMq.matches) {
+        setPolaroids([])
+      }
+      start()
+    }
+
+    start()
+    mobileMq.addEventListener('change', handleMqChange)
+    reducedMotionMq.addEventListener('change', handleMqChange)
+
+    return () => {
+      stop()
+      mobileMq.removeEventListener('change', handleMqChange)
+      reducedMotionMq.removeEventListener('change', handleMqChange)
+    }
+  }, [])
 
   const handleCopyEmail = async () => {
     try {
@@ -142,14 +564,14 @@ export default function Home() {
   return (
     <div
       ref={containerRef}
-      className='relative box-border flex h-dvh w-full flex-col justify-end overflow-visible p-6 tablet:p-16'
+      className='relative box-border flex w-full flex-col overflow-visible p-6 tablet:h-dvh tablet:justify-end tablet:p-16'
     >
       <div
         ref={interactionBoundsRef}
-        className='absolute top-0 z-[5] overflow-visible'
+        className='relative z-[5] h-[50vh] min-h-[280px] max-h-[420px] w-full shrink-0 touch-none overflow-hidden tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink'
         aria-hidden
       >
-        <div className='pointer-events-none absolute inset-0 overflow-visible'>
+        <div className='pointer-events-none absolute inset-0 overflow-hidden tablet:overflow-visible'>
         {polaroids.map((p) => (
           <div
             key={p.id}
@@ -161,16 +583,28 @@ export default function Home() {
             }}
           >
             <div
-              className='animate-polaroid-lifecycle origin-center'
-              style={{ animationDuration: `${POLAROID_LIFETIME}ms` }}
+              className={
+                p.exiting
+                  ? 'animate-polaroid-exit origin-center'
+                  : p.holdUntilReplaced
+                    ? 'animate-polaroid-enter origin-center'
+                    : 'animate-polaroid-lifecycle origin-center'
+              }
+              style={{
+                animationDuration: p.exiting
+                  ? `${POLAROID_EXIT_MS}ms`
+                  : p.holdUntilReplaced
+                    ? `${POLAROID_EXPAND_MS}ms`
+                    : `${p.lifetimeMs}ms`
+              }}
             >
-              <div className='rounded-xl flex flex-col bg-[color-mix(in_srgb,white_50%,var(--color-neutral-200))] p-3 pb-10 shadow-lg'>
-                <div className='relative size-40 overflow-hidden rounded-sm bg-neutral-200'>
+              <div className='flex flex-col rounded-xl bg-[color-mix(in_srgb,white_50%,var(--color-neutral-200))] p-2 pb-6 shadow-lg tablet:p-3 tablet:pb-10'>
+                <div className='relative size-32 overflow-hidden rounded-sm bg-neutral-200 tablet:size-40'>
                   <Image
                     src={p.image}
                     alt=''
                     fill
-                    sizes='160px'
+                    sizes='(max-width: 767px) 128px, 160px'
                     className='object-cover'
                     draggable={false}
                   />
@@ -183,7 +617,7 @@ export default function Home() {
       </div>
       <div
         ref={contentRef}
-        className='relative z-0 flex w-full flex-col gap-9'
+        className='relative z-10 flex w-full flex-col gap-5 tablet:z-0 tablet:mt-0 tablet:gap-9'
       >
         <h1 className='font-primary tablet:text-6xl text-4xl'>
           I’m a design engineer.
@@ -192,7 +626,7 @@ export default function Home() {
         </h1>
 
         <div className='tablet:flex-row tablet:items-start flex w-full flex-col gap-10 desktop:grid desktop:grid-cols-2 desktop:items-start desktop:gap-24'>
-          <div className='font-secondary desktop:text-base flex flex-col gap-3 text-sm text-neutral-400 desktop:gap-3.5'>
+          <div className='font-secondary desktop:text-base mb-4 flex flex-col gap-3 text-sm text-neutral-400 tablet:mb-0 desktop:gap-3.5'>
             <p>
               I strive to build experiences that quietly slip into someone&apos;s
               day and leave them feeling understood. Earning
@@ -216,7 +650,7 @@ export default function Home() {
               </span>
             </p>
           </div>
-          <div className='flex w-full'>
+          <div className='tablet:flex hidden w-full'>
             <MiniResume />
           </div>
         </div>
@@ -225,7 +659,7 @@ export default function Home() {
                 href='https://linkedin.com/in/jagat-sachdeva'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
               >
                 <FaLinkedin />
               </Link>
@@ -233,7 +667,7 @@ export default function Home() {
                 href='https://github.com/jsachdeva7'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
               >
                 <FaGithub />
               </Link>
@@ -241,7 +675,7 @@ export default function Home() {
                 href='https://x.com/JagatSachdeva'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
               >
                 <FaXTwitter />
               </Link>
@@ -249,7 +683,7 @@ export default function Home() {
                 href='https://www.instagram.com/jagatsachdeva/'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='tablet:text-xl text-4xl text-neutral-400 transition-colors hover:text-white'
+                className='tablet:text-xl text-3xl text-neutral-400 transition-colors hover:text-white'
               >
                 <FaInstagram />
               </Link>
