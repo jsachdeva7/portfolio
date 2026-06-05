@@ -106,7 +106,7 @@ export default function Navbar() {
           aria-hidden
           className='navbar-scrim pointer-events-none absolute inset-x-0 top-0 bottom-0'
         />
-        <nav className='font-primary tablet:px-8 tablet:py-4 pointer-events-auto relative flex w-full flex-row items-center justify-between gap-4 px-4 py-3.5 text-base font-medium'>
+        <nav className='font-primary tablet:px-8 tablet:py-4 pointer-events-auto relative flex w-full flex-row items-center justify-between gap-4 px-3 py-3.5 text-base font-medium'>
           <div className='tablet:flex-row tablet:items-center tablet:gap-2 flex flex-col items-start leading-tight'>
             <div>jagat sachdeva</div>
             <div className='tablet:block hidden text-[#A1A1A1]'>

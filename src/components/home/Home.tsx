@@ -17,7 +17,7 @@ interface Polaroid {
   image: StaticImageData
   lifetimeMs: number
   exiting?: boolean
-  /** Ambient pops: hold until replaced (overlap stack). */
+  /** Ambient pops: build up and hold indefinitely (cleared only on cursor move). */
   holdUntilReplaced?: boolean
 }
 
@@ -27,27 +27,20 @@ const MOBILE_SPAWN_INTERVAL_MS = 750
 const DESKTOP_AUTO_SPAWN_INTERVAL_MS = 750
 /** Resume ambient pops after the cursor stops moving in the polaroid zone. */
 const POINTER_IDLE_MS = 2800
-const DESKTOP_AMBIENT_MAX_ACTIVE = 10
-const MOBILE_AMBIENT_MAX_ACTIVE = 10
 const TABLET_MIN_WIDTH_PX = 768
 const POLAROID_EXPAND_MS = 120
 const POLAROID_HOLD_MS = 500
 const POLAROID_EXIT_MS = 220
 const POLAROID_LIFETIME =
   POLAROID_EXPAND_MS + POLAROID_HOLD_MS + POLAROID_EXIT_MS
-/** Desktop ambient stack: photos exit when the next one pushes past max (no timer). */
-const DESKTOP_AMBIENT_VISIBLE_MS = POLAROID_EXPAND_MS
-/** Mobile ambient: timer hold before exit (overlap also caps count). */
-const MOBILE_AMBIENT_HOLD_MS = 5000
-const MOBILE_AMBIENT_VISIBLE_MS = POLAROID_EXPAND_MS + MOBILE_AMBIENT_HOLD_MS
-// Half-size estimates so polaroids stay inside the interaction bounds.
+
+// Half-size estimates (frame + max rotation) used to keep cards inside the stage.
 const POLAROID_HALF_W = 92
 const POLAROID_HALF_H = 106
 const MOBILE_POLAROID_HALF_W = 72
-/** Includes frame + max rotation so clamps keep the full card inside the stage. */
 const MOBILE_POLAROID_HALF_H = 96
-/** Mobile: inset only along the bottom edge of the stage. */
-const MOBILE_SPAWN_BOTTOM_PAD = 0
+// Top & sides may overflow, but at least this fraction of each card stays on-screen.
+const MIN_POLAROID_ON_SCREEN = 0.8
 
 const getPolaroidHalfDims = (mobile: boolean) =>
   mobile
@@ -56,18 +49,14 @@ const getPolaroidHalfDims = (mobile: boolean) =>
 
 const getSpawnLimits = (mobile: boolean, boundsW: number, boundsH: number) => {
   const { halfW, halfH } = getPolaroidHalfDims(mobile)
-  if (mobile) {
-    return {
-      minX: 0,
-      maxX: boundsW,
-      minY: 0,
-      maxY: boundsH - halfH - MOBILE_SPAWN_BOTTOM_PAD
-    }
-  }
+  // Inset that leaves MIN_POLAROID_ON_SCREEN of the card visible at top/sides
+  // (e.g. 0.8 → center sits 60% of the half-size in, so only 20% overflows).
+  const visibleInset = (half: number) => half * (2 * MIN_POLAROID_ON_SCREEN - 1)
   return {
-    minX: halfW,
-    maxX: boundsW - halfW,
-    minY: halfH,
+    minX: visibleInset(halfW),
+    maxX: boundsW - visibleInset(halfW),
+    minY: visibleInset(halfH),
+    // Bottom keeps the full half-height margin so cards never spill into the heading.
     maxY: boundsH - halfH
   }
 }
@@ -144,7 +133,6 @@ export default function Home() {
   const [copied, setCopied] = useState(false)
   const [polaroids, setPolaroids] = useState<Polaroid[]>([])
   const polaroidsRef = useRef<Polaroid[]>([])
-  polaroidsRef.current = polaroids
 
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -155,41 +143,10 @@ export default function Home() {
   const imageIndexRef = useRef(0)
   const pointerActiveRef = useRef(false)
   const desktopAutoSpawnEnabledRef = useRef(true)
-  const ambientExpiryTimersRef = useRef(
-    new Map<number, ReturnType<typeof setTimeout>>()
-  )
 
   const removePolaroidById = useCallback((id: number) => {
     setPolaroids(prev => prev.filter(p => p.id !== id))
   }, [])
-
-  const clearAmbientTimer = useCallback((id: number) => {
-    const timer = ambientExpiryTimersRef.current.get(id)
-    if (timer) clearTimeout(timer)
-    ambientExpiryTimersRef.current.delete(id)
-  }, [])
-
-  const startPolaroidExit = useCallback(
-    (id: number) => {
-      setPolaroids(prev =>
-        prev.map(p => (p.id === id && !p.exiting ? { ...p, exiting: true } : p))
-      )
-      setTimeout(() => removePolaroidById(id), POLAROID_EXIT_MS)
-    },
-    [removePolaroidById]
-  )
-
-  const scheduleAmbientExpiry = useCallback(
-    (id: number, visibleMs: number) => {
-      clearAmbientTimer(id)
-      const timer = setTimeout(() => {
-        ambientExpiryTimersRef.current.delete(id)
-        startPolaroidExit(id)
-      }, visibleMs)
-      ambientExpiryTimersRef.current.set(id, timer)
-    },
-    [clearAmbientTimer, startPolaroidExit]
-  )
 
   const dismissAmbientPolaroids = useCallback(() => {
     setPolaroids(prev => {
@@ -198,19 +155,17 @@ export default function Home() {
 
       const exitIds = new Set(toDismiss.map(p => p.id))
       for (const p of toDismiss) {
-        clearAmbientTimer(p.id)
         setTimeout(() => removePolaroidById(p.id), POLAROID_EXIT_MS)
       }
       return prev.map(p => (exitIds.has(p.id) ? { ...p, exiting: true } : p))
     })
-  }, [clearAmbientTimer, removePolaroidById])
+  }, [removePolaroidById])
 
   const spawnPolaroid = useCallback(
     (
       x: number,
       y: number,
-      kind: 'ambient' | 'trail' = 'ambient',
-      mobile = window.innerWidth < TABLET_MIN_WIDTH_PX
+      kind: 'ambient' | 'trail' = 'ambient'
     ) => {
       const id = nextIdRef.current++
       const rotation = Math.random() * 40 - 20
@@ -219,48 +174,22 @@ export default function Home() {
       imageIndexRef.current += 1
 
       if (kind === 'ambient') {
-        const maxActive = mobile
-          ? MOBILE_AMBIENT_MAX_ACTIVE
-          : DESKTOP_AMBIENT_MAX_ACTIVE
-        const ambientVisibleMs = mobile
-          ? MOBILE_AMBIENT_VISIBLE_MS
-          : DESKTOP_AMBIENT_VISIBLE_MS
-
-        setPolaroids(prev => {
-          const activeAmbient = prev.filter(
-            p => p.holdUntilReplaced && !p.exiting
-          )
-          const toExitCount = Math.max(
-            0,
-            activeAmbient.length - (maxActive - 1)
-          )
-          const toExit = activeAmbient.slice(0, toExitCount)
-          const toExitIds = new Set(toExit.map(p => p.id))
-
-          for (const p of toExit) {
-            clearAmbientTimer(p.id)
-            setTimeout(() => removePolaroidById(p.id), POLAROID_EXIT_MS)
+        // Ambient pops build up one photo at a time and hold indefinitely — no
+        // count cap and no exit timer. They only leave when the cursor moves
+        // (dismissAmbientPolaroids); the spawn interval stops once every photo
+        // has been placed, so the stage simply fills and stays.
+        setPolaroids(prev => [
+          ...prev,
+          {
+            id,
+            x,
+            y,
+            rotation,
+            image,
+            lifetimeMs: POLAROID_EXPAND_MS,
+            holdUntilReplaced: true
           }
-
-          const withExiting = prev.map(p =>
-            toExitIds.has(p.id) ? { ...p, exiting: true } : p
-          )
-          return [
-            ...withExiting,
-            {
-              id,
-              x,
-              y,
-              rotation,
-              image,
-              lifetimeMs: ambientVisibleMs,
-              holdUntilReplaced: true
-            }
-          ]
-        })
-        if (mobile) {
-          scheduleAmbientExpiry(id, ambientVisibleMs)
-        }
+        ])
         return
       }
 
@@ -272,13 +201,19 @@ export default function Home() {
         removePolaroidById(id)
       }, POLAROID_LIFETIME)
     },
-    [clearAmbientTimer, removePolaroidById, scheduleAmbientExpiry]
+    [removePolaroidById]
   )
 
   const spawnPolaroidRef = useRef(spawnPolaroid)
   const dismissAmbientPolaroidsRef = useRef(dismissAmbientPolaroids)
-  spawnPolaroidRef.current = spawnPolaroid
-  dismissAmbientPolaroidsRef.current = dismissAmbientPolaroids
+
+  // Keep the refs read by the pointer/interval handlers pointed at the latest
+  // state and callbacks (synced after commit so the handlers never read stale ones).
+  useEffect(() => {
+    polaroidsRef.current = polaroids
+    spawnPolaroidRef.current = spawnPolaroid
+    dismissAmbientPolaroidsRef.current = dismissAmbientPolaroids
+  })
 
   // Warm the browser cache with every polaroid up front so each pop renders
   // instantly instead of triggering a network fetch on spawn. Assets are served
@@ -336,6 +271,9 @@ export default function Home() {
       if (window.innerWidth < TABLET_MIN_WIDTH_PX) return
       clearTimeout(pointerIdleTimeoutId)
       pointerIdleTimeoutId = setTimeout(() => {
+        // Rewind the photo sequence so the idle build-up starts fresh from
+        // the first image and fills the stage again.
+        imageIndexRef.current = 0
         desktopAutoSpawnEnabledRef.current = true
       }, POINTER_IDLE_MS)
     }
@@ -351,8 +289,7 @@ export default function Home() {
       spawnPolaroidRef.current(
         clamp(x, minX, maxX),
         clamp(y, minY, maxY),
-        'trail',
-        false
+        'trail'
       )
     }
 
@@ -385,10 +322,12 @@ export default function Home() {
     }
 
     const handlePointerMove = (e: PointerEvent) => {
+      // Mobile gets no cursor-driven pops — it only runs the auto build-up.
+      if (window.innerWidth < TABLET_MIN_WIDTH_PX) return
+
       const boundsRect = interactionBounds.getBoundingClientRect()
       const boundsW = boundsRect.width
       const boundsH = boundsRect.height
-      const mobile = window.innerWidth < TABLET_MIN_WIDTH_PX
 
       // Ignore mouse movement while a button is held (dragging / selecting), not touch.
       if (e.pointerType === 'mouse' && e.buttons !== 0) {
@@ -404,11 +343,7 @@ export default function Home() {
 
       const last = lastPosRef.current
       if (!last) {
-        if (
-          !mobile &&
-          e.pointerType === 'mouse' &&
-          desktopAutoSpawnEnabledRef.current
-        ) {
+        if (e.pointerType === 'mouse' && desktopAutoSpawnEnabledRef.current) {
           engageDesktopTrail(x, y, boundsW, boundsH)
         } else {
           lastPosRef.current = { x, y }
@@ -420,11 +355,7 @@ export default function Home() {
       const dy = y - last.y
       if (dx === 0 && dy === 0) return
 
-      if (
-        !mobile &&
-        e.pointerType === 'mouse' &&
-        desktopAutoSpawnEnabledRef.current
-      ) {
+      if (e.pointerType === 'mouse' && desktopAutoSpawnEnabledRef.current) {
         engageDesktopTrail(x, y, boundsW, boundsH)
         return
       }
@@ -434,22 +365,7 @@ export default function Home() {
 
       if (distanceRef.current >= SPAWN_DISTANCE) {
         distanceRef.current = 0
-        if (mobile) {
-          const { minX, maxX, minY, maxY } = getSpawnLimits(
-            true,
-            boundsW,
-            boundsH
-          )
-          if (maxX <= minX || maxY <= minY) return
-          spawnPolaroidRef.current(
-            clamp(x, minX, maxX),
-            clamp(y, minY, maxY),
-            'ambient',
-            true
-          )
-        } else {
-          spawnDesktopTrailAt(x, y, boundsW, boundsH)
-        }
+        spawnDesktopTrailAt(x, y, boundsW, boundsH)
       }
     }
 
@@ -503,11 +419,7 @@ export default function Home() {
     const spawnRandomPolaroid = (mobile: boolean) => {
       const boundsW = interactionBounds.offsetWidth
       const boundsH = interactionBounds.offsetHeight
-      const { minX, maxX, minY, maxY } = getSpawnLimits(
-        mobile,
-        boundsW,
-        boundsH
-      )
+      const { minX, maxX, minY, maxY } = getSpawnLimits(mobile, boundsW, boundsH)
       if (maxX <= minX || maxY <= minY) return
       if (pointerActiveRef.current) return
 
@@ -517,11 +429,16 @@ export default function Home() {
         boundsH,
         polaroidsRef.current
       )
-      spawnPolaroidRef.current(x, y, 'ambient', mobile)
+      spawnPolaroidRef.current(x, y, 'ambient')
     }
+
+    // Build up one photo per tick until the whole sequence has been placed.
+    const allPhotosPlaced = () =>
+      imageIndexRef.current >= polaroidImages.length
 
     const tick = () => {
       if (reducedMotionMq.matches) return
+      if (allPhotosPlaced()) return
       if (mobileMq.matches) {
         spawnRandomPolaroid(true)
         return
@@ -547,6 +464,8 @@ export default function Home() {
     const handleMqChange = () => {
       stop()
       desktopAutoSpawnEnabledRef.current = true
+      // Rewind the sequence so the new breakpoint fills the stage from scratch.
+      imageIndexRef.current = 0
       if (mobileMq.matches) {
         setPolaroids([])
       }
@@ -582,7 +501,7 @@ export default function Home() {
     >
       <div
         ref={interactionBoundsRef}
-        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-[5] h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-none overflow-visible'
+        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-[5] h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-auto overflow-visible'
         aria-hidden
       >
         <div className='pointer-events-none absolute inset-0 overflow-visible'>
