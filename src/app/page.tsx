@@ -38,7 +38,7 @@ export default function HomePage() {
           <section id='about' className='w-full scroll-mt-28 overflow-visible'>
             <Home />
           </section>
-          <section className='tablet:px-12 tablet:pb-16 px-4.5 pb-6'>
+          <section className='tablet:px-12 tablet:pb-16 px-4 pb-6'>
             <Projects onSelectProject={handleSelectProject} />
           </section>
         </>

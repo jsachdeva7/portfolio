@@ -296,14 +296,20 @@
   }
 }
 
-@keyframes polaroid-exit {
+/* Desktop dismissal: ambient stack drops straight down out of the page with a
+   tumble. The translate stays in page space (this layer is only positioned, not
+   tilted) so the fall is vertical regardless of the card's resting rotation. */
+@keyframes polaroid-fall {
   0% {
-    transform: scale(1);
+    transform: translate(-50%, -50%) rotate(var(--tilt, 0deg));
     opacity: 1;
-    animation-timing-function: ease-in;
+  }
+  85% {
+    opacity: 1;
   }
   100% {
-    transform: scale(0.5);
+    transform: translate(-50%, calc(-50% + 130vh))
+      rotate(calc(var(--tilt, 0deg) + var(--fall-spin, 90deg)));
     opacity: 0;
   }
 }
@@ -313,7 +319,9 @@
   animation-fill-mode: forwards;
 }
 
-.animate-polaroid-exit {
-  animation-name: polaroid-exit;
+.animate-polaroid-fall {
+  animation-name: polaroid-fall;
   animation-fill-mode: forwards;
+  /* Accelerate downward like gravity. */
+  animation-timing-function: cubic-bezier(0.45, 0, 1, 1);
 }
