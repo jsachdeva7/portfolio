@@ -53,11 +53,14 @@ export default function RootLayout({
       className={cn(
         crimsonPro.variable,
         cousine.variable,
-        beVietnamPro.variable
+        beVietnamPro.variable,
+        // Clip horizontal overflow so polaroids that spin/hang past the edges
+        // (especially while falling) can't widen the page and jolt mobile.
+        'overflow-x-clip'
       )}
     >
       <body
-        className='flex h-screen flex-col bg-neutral-950 text-white antialiased'
+        className='flex h-screen touch-manipulation flex-col bg-neutral-950 text-white antialiased'
         suppressHydrationWarning
       >
         <Providers>

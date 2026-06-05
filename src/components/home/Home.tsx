@@ -563,7 +563,7 @@ export default function Home() {
     >
       <div
         ref={interactionBoundsRef}
-        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-20 h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-auto overflow-visible'
+        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-20 h-[50svh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-manipulation overflow-visible'
         aria-hidden
       >
         <div className='pointer-events-none absolute inset-0 overflow-visible'>
