@@ -4,7 +4,7 @@ import { polaroidImages } from '@/components/home/polaroidImages'
 import MiniResume from '@/components/shared/MiniResume'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { LuCheck, LuCopy } from 'react-icons/lu'
@@ -33,6 +33,16 @@ const POLAROID_HOLD_MS = 500
 const POLAROID_EXIT_MS = 220
 const POLAROID_LIFETIME =
   POLAROID_EXPAND_MS + POLAROID_HOLD_MS + POLAROID_EXIT_MS
+/** Desktop: ambient stack drops out of the page when the cursor takes over. */
+const POLAROID_FALL_MS = 750
+/** Slight per-card offset so the stack doesn't drop in perfect lockstep. */
+const POLAROID_FALL_STAGGER_MS = 45
+const getFallDelayMs = (id: number) => (id % 4) * POLAROID_FALL_STAGGER_MS
+/** Continue the card's tilt into a tumble as it falls (direction follows tilt). */
+const getFallSpinDeg = (id: number, rotation: number) =>
+  (rotation >= 0 ? 1 : -1) * (80 + (id % 5) * 12)
+/** Mobile: a touch that moves less than this counts as a tap (vs. a scroll). */
+const TAP_MOVE_TOLERANCE_PX = 12
 
 // Half-size estimates (frame + max rotation) used to keep cards inside the stage.
 const POLAROID_HALF_W = 92
@@ -83,7 +93,8 @@ const pickDispersedAmbientPosition = (
 
   const occupancy = Array<number>(cellCount).fill(0)
   for (const p of existing) {
-    if (!p.holdUntilReplaced) continue
+    // Ignore cards already falling away so a rebuild disperses freshly.
+    if (!p.holdUntilReplaced || p.exiting) continue
     const col = Math.min(
       cols - 1,
       Math.max(0, Math.floor((p.x - minX) / cellW))
@@ -155,7 +166,10 @@ export default function Home() {
 
       const exitIds = new Set(toDismiss.map(p => p.id))
       for (const p of toDismiss) {
-        setTimeout(() => removePolaroidById(p.id), POLAROID_EXIT_MS)
+        setTimeout(
+          () => removePolaroidById(p.id),
+          POLAROID_FALL_MS + getFallDelayMs(p.id)
+        )
       }
       return prev.map(p => (exitIds.has(p.id) ? { ...p, exiting: true } : p))
     })
@@ -371,14 +385,39 @@ export default function Home() {
       scheduleDesktopAutoSpawnResume()
     }
 
-    const handlePointerDown = () => {
-      pointerActiveRef.current = true
-    }
+    // Track the touch start so we can tell a mobile tap from a scroll.
+    let tapStart: { x: number; y: number } | null = null
 
-    const handlePointerUp = () => {
+    const resetPointer = () => {
       pointerActiveRef.current = false
       lastPosRef.current = null
       distanceRef.current = 0
+    }
+
+    const handlePointerDown = (e: PointerEvent) => {
+      pointerActiveRef.current = true
+      tapStart =
+        window.innerWidth < TABLET_MIN_WIDTH_PX
+          ? { x: e.clientX, y: e.clientY }
+          : null
+    }
+
+    const handlePointerUp = (e: PointerEvent) => {
+      resetPointer()
+      // Mobile tap: drop the whole collage with the fall, then rebuild from empty.
+      if (tapStart) {
+        const moved = Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y)
+        if (moved < TAP_MOVE_TOLERANCE_PX) {
+          dismissAmbientPolaroidsRef.current()
+          imageIndexRef.current = 0
+        }
+      }
+      tapStart = null
+    }
+
+    const handlePointerCancel = () => {
+      resetPointer()
+      tapStart = null
     }
 
     interactionBounds.addEventListener('pointerenter', handlePointerEnter)
@@ -386,7 +425,7 @@ export default function Home() {
     interactionBounds.addEventListener('pointerleave', handlePointerLeave)
     interactionBounds.addEventListener('pointerdown', handlePointerDown)
     interactionBounds.addEventListener('pointerup', handlePointerUp)
-    interactionBounds.addEventListener('pointercancel', handlePointerUp)
+    interactionBounds.addEventListener('pointercancel', handlePointerCancel)
     return () => {
       clearTimeout(pointerIdleTimeoutId)
       resizeObserver.disconnect()
@@ -396,7 +435,7 @@ export default function Home() {
       interactionBounds.removeEventListener('pointerleave', handlePointerLeave)
       interactionBounds.removeEventListener('pointerdown', handlePointerDown)
       interactionBounds.removeEventListener('pointerup', handlePointerUp)
-      interactionBounds.removeEventListener('pointercancel', handlePointerUp)
+      interactionBounds.removeEventListener('pointercancel', handlePointerCancel)
     }
   }, [])
 
@@ -500,34 +539,42 @@ export default function Home() {
     >
       <div
         ref={interactionBoundsRef}
-        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-[5] h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-auto overflow-visible'
+        className='tablet:absolute tablet:top-0 tablet:z-[5] tablet:h-auto tablet:max-h-none tablet:min-h-0 tablet:w-auto tablet:touch-auto tablet:overflow-visible tablet:shrink relative z-20 h-[50vh] max-h-[420px] min-h-[280px] w-full shrink-0 touch-auto overflow-visible'
         aria-hidden
       >
         <div className='pointer-events-none absolute inset-0 overflow-visible'>
           {polaroids.map(p => (
             <div
               key={p.id}
-              className='absolute'
-              style={{
-                left: p.x,
-                top: p.y,
-                transform: `translate(-50%, -50%) rotate(${p.rotation}deg)`
-              }}
+              className={`absolute ${p.exiting ? 'animate-polaroid-fall' : ''}`}
+              style={
+                {
+                  left: p.x,
+                  top: p.y,
+                  // Tilt + spin live in CSS vars so the fall keyframe can both
+                  // start from the resting tilt and tumble onward from it.
+                  transform: 'translate(-50%, -50%) rotate(var(--tilt))',
+                  '--tilt': `${p.rotation}deg`,
+                  '--fall-spin': `${getFallSpinDeg(p.id, p.rotation)}deg`,
+                  ...(p.exiting
+                    ? {
+                        animationDuration: `${POLAROID_FALL_MS}ms`,
+                        animationDelay: `${getFallDelayMs(p.id)}ms`
+                      }
+                    : null)
+                } as CSSProperties
+              }
             >
               <div
                 className={
-                  p.exiting
-                    ? 'animate-polaroid-exit origin-center'
-                    : p.holdUntilReplaced
-                      ? 'animate-polaroid-enter origin-center'
-                      : 'animate-polaroid-lifecycle origin-center'
+                  p.holdUntilReplaced
+                    ? 'animate-polaroid-enter origin-center'
+                    : 'animate-polaroid-lifecycle origin-center'
                 }
                 style={{
-                  animationDuration: p.exiting
-                    ? `${POLAROID_EXIT_MS}ms`
-                    : p.holdUntilReplaced
-                      ? `${POLAROID_EXPAND_MS}ms`
-                      : `${p.lifetimeMs}ms`
+                  animationDuration: p.holdUntilReplaced
+                    ? `${POLAROID_EXPAND_MS}ms`
+                    : `${p.lifetimeMs}ms`
                 }}
               >
                 <div className='tablet:p-3 tablet:pb-10 flex flex-col rounded-xl bg-[color-mix(in_srgb,white_50%,var(--color-neutral-200))] p-2 pb-6 shadow-lg'>
