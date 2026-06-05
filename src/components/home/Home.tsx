@@ -162,11 +162,7 @@ export default function Home() {
   }, [removePolaroidById])
 
   const spawnPolaroid = useCallback(
-    (
-      x: number,
-      y: number,
-      kind: 'ambient' | 'trail' = 'ambient'
-    ) => {
+    (x: number, y: number, kind: 'ambient' | 'trail' = 'ambient') => {
       const id = nextIdRef.current++
       const rotation = Math.random() * 40 - 20
       const image =
@@ -419,7 +415,11 @@ export default function Home() {
     const spawnRandomPolaroid = (mobile: boolean) => {
       const boundsW = interactionBounds.offsetWidth
       const boundsH = interactionBounds.offsetHeight
-      const { minX, maxX, minY, maxY } = getSpawnLimits(mobile, boundsW, boundsH)
+      const { minX, maxX, minY, maxY } = getSpawnLimits(
+        mobile,
+        boundsW,
+        boundsH
+      )
       if (maxX <= minX || maxY <= minY) return
       if (pointerActiveRef.current) return
 
@@ -433,8 +433,7 @@ export default function Home() {
     }
 
     // Build up one photo per tick until the whole sequence has been placed.
-    const allPhotosPlaced = () =>
-      imageIndexRef.current >= polaroidImages.length
+    const allPhotosPlaced = () => imageIndexRef.current >= polaroidImages.length
 
     const tick = () => {
       if (reducedMotionMq.matches) return
