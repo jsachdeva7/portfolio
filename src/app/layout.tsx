@@ -1,6 +1,6 @@
 import Navbar from '@/components/shared/Navbar'
 import { cn } from '@/lib/utils'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Be_Vietnam_Pro, Roboto_Mono, Crimson_Pro } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
@@ -31,6 +31,15 @@ export const metadata: Metadata = {
   icons: {
     icon: '/Farfalle.png'
   }
+}
+
+// Lock zoom on phones so tapping the polaroid stage can't trigger a
+// double-tap/pinch zoom jolt. Scrolling still works.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false
 }
 
 export default function RootLayout({

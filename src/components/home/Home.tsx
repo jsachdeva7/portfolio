@@ -157,7 +157,14 @@ export default function Home() {
   const lastPosRef = useRef<{ x: number; y: number } | null>(null)
   const distanceRef = useRef(0)
   const nextIdRef = useRef(0)
+  // Ever-advancing image cursor — never reset, so each rebuild keeps cycling
+  // through the photos instead of restarting on the same first image.
   const imageIndexRef = useRef(0)
+  // How many ambient pops have been placed this round — reset on rebuild to
+  // refill the whole stage; gates the build-up independently of the image cursor.
+  const placedCountRef = useRef(0)
+  // Timestamp (ms) before which ambient spawning is paused after a mobile reset.
+  const spawnGateRef = useRef(0)
   const pointerActiveRef = useRef(false)
   const desktopAutoSpawnEnabledRef = useRef(true)
 
@@ -194,6 +201,7 @@ export default function Home() {
         // count cap and no exit timer. They only leave when the cursor moves
         // (dismissAmbientPolaroids); the spawn interval stops once every photo
         // has been placed, so the stage simply fills and stays.
+        placedCountRef.current += 1
         setPolaroids(prev => [
           ...prev,
           {
@@ -287,9 +295,8 @@ export default function Home() {
       if (window.innerWidth < TABLET_MIN_WIDTH_PX) return
       clearTimeout(pointerIdleTimeoutId)
       pointerIdleTimeoutId = setTimeout(() => {
-        // Rewind the photo sequence so the idle build-up starts fresh from
-        // the first image and fills the stage again.
-        imageIndexRef.current = 0
+        // Refill the whole stage on the next idle build-up (images keep cycling).
+        placedCountRef.current = 0
         desktopAutoSpawnEnabledRef.current = true
       }, POINTER_IDLE_MS)
     }
@@ -410,12 +417,17 @@ export default function Home() {
 
     const handlePointerUp = (e: PointerEvent) => {
       resetPointer()
-      // Mobile tap: drop the whole collage with the fall, then rebuild from empty.
+      // Mobile tap: drop the whole collage with the fall, then rebuild from empty
+      // after a beat — keep cycling images rather than restarting on the same one.
       if (tapStart) {
         const moved = Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y)
         if (moved < TAP_MOVE_TOLERANCE_PX) {
           dismissAmbientPolaroidsRef.current()
-          imageIndexRef.current = 0
+          placedCountRef.current = 0
+          // A round places exactly one full set, so nudge the cursor by one to
+          // keep the first image of each rebuild advancing instead of repeating.
+          imageIndexRef.current += 1
+          spawnGateRef.current = Date.now() + MOBILE_SPAWN_INTERVAL_MS
         }
       }
       tapStart = null
@@ -480,11 +492,14 @@ export default function Home() {
       spawnPolaroidRef.current(x, y, 'ambient')
     }
 
-    // Build up one photo per tick until the whole sequence has been placed.
-    const allPhotosPlaced = () => imageIndexRef.current >= polaroidImages.length
+    // Build up one photo per tick until the stage holds the whole set.
+    const allPhotosPlaced = () =>
+      placedCountRef.current >= polaroidImages.length
 
     const tick = () => {
       if (reducedMotionMq.matches) return
+      // Hold off right after a reset so the rebuild waits a full beat first.
+      if (Date.now() < spawnGateRef.current) return
       if (allPhotosPlaced()) return
       if (mobileMq.matches) {
         spawnRandomPolaroid(true)
@@ -511,8 +526,8 @@ export default function Home() {
     const handleMqChange = () => {
       stop()
       desktopAutoSpawnEnabledRef.current = true
-      // Rewind the sequence so the new breakpoint fills the stage from scratch.
-      imageIndexRef.current = 0
+      // Refill the stage from scratch at the new breakpoint (images keep cycling).
+      placedCountRef.current = 0
       if (mobileMq.matches) {
         setPolaroids([])
       }
@@ -544,7 +559,7 @@ export default function Home() {
   return (
     <div
       ref={containerRef}
-      className='tablet:h-dvh tablet:justify-end tablet:p-16 relative box-border flex w-full flex-col overflow-visible p-6'
+      className='tablet:h-dvh tablet:justify-end tablet:px-12 tablet:py-16 relative box-border flex w-full flex-col overflow-visible px-4 py-6'
     >
       <div
         ref={interactionBoundsRef}
