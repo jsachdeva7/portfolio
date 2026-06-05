@@ -4,7 +4,13 @@ import { polaroidImages } from '@/components/home/polaroidImages'
 import MiniResume from '@/components/shared/MiniResume'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
-import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { LuCheck, LuCopy } from 'react-icons/lu'
@@ -435,7 +441,10 @@ export default function Home() {
       interactionBounds.removeEventListener('pointerleave', handlePointerLeave)
       interactionBounds.removeEventListener('pointerdown', handlePointerDown)
       interactionBounds.removeEventListener('pointerup', handlePointerUp)
-      interactionBounds.removeEventListener('pointercancel', handlePointerCancel)
+      interactionBounds.removeEventListener(
+        'pointercancel',
+        handlePointerCancel
+      )
     }
   }, [])
 
