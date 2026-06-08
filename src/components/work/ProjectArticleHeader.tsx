@@ -1,13 +1,16 @@
 import Autonomous from './assets/Autonomous.svg'
 import CheckIn from './assets/CheckIn.png'
+import CheckInSquare from './assets/CheckInSquare.png'
 import Gravity from './assets/Gravity.svg'
 import RMS from './assets/RMS.svg'
 import Robotech from './assets/Robotech.svg'
 import Soar from './assets/Soar.png'
 import Stanley from './assets/Stanley.png'
+import StanleySquare from './assets/StanleySquare.png'
 import Stylistic from './assets/Stylistic.png'
 import Tmp from './assets/Tmp.svg'
 import Allrecipes from './assets/Allrecipes.svg'
+import TF from './assets/TF.png'
 import TFLandscape from './assets/TFLandscape.png'
 
 interface ProjectArticleHeaderProps {
@@ -35,17 +38,25 @@ function renderHighlightedText(text: string) {
 
 const thumbnailConfig: Record<
   string,
-  { bg: string; src: string; alt: string; style: 'full' | 'padded' }
+  {
+    bg: string
+    src: string
+    mobileSrc?: string
+    alt: string
+    style: 'full' | 'padded'
+  }
 > = {
   'Talking Fingers': {
     bg: 'bg-[#e5ecf7]',
     src: TFLandscape.src,
+    mobileSrc: TF.src,
     alt: 'Talking Fingers',
     style: 'full'
   },
   Stanley: {
     bg: 'bg-[#eae8f8]',
     src: Stanley.src,
+    mobileSrc: StanleySquare.src,
     alt: 'Stanley',
     style: 'full'
   },
@@ -58,6 +69,7 @@ const thumbnailConfig: Record<
   CheckIn: {
     bg: 'bg-[#452f21]',
     src: CheckIn.src,
+    mobileSrc: CheckInSquare.src,
     alt: 'CheckIn',
     style: 'full'
   },
@@ -117,7 +129,14 @@ function ArticleThumbnail({ title }: { title: string }) {
 
   return (
     <div className={containerClasses}>
-      <img src={config.src} alt={config.alt} className={imgClasses} />
+      {config.mobileSrc ? (
+        <picture>
+          <source media='(max-width: 767px)' srcSet={config.mobileSrc} />
+          <img src={config.src} alt={config.alt} className={imgClasses} />
+        </picture>
+      ) : (
+        <img src={config.src} alt={config.alt} className={imgClasses} />
+      )}
     </div>
   )
 }

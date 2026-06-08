@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
 import Autonomous from './assets/Autonomous.svg'
 import CheckIn from './assets/CheckIn.png'
+import CheckInSquare from './assets/CheckInSquare.png'
 import Gravity from './assets/Gravity.svg'
 import RMS from './assets/RMS.svg'
 import Robotech from './assets/Robotech.svg'
@@ -29,7 +29,6 @@ export interface Project {
 
 interface ThumbnailProps {
   project: Project
-  isInViewport?: boolean
 }
 
 const thumbImgShadow = 'drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
@@ -38,10 +37,11 @@ const thumbImgShadow = 'drop-shadow-[0_12px_28px_rgba(0,0,0,0.4)]'
 const thumbFrameHoverGlow =
   'transition-shadow duration-300 ease-out group-hover:shadow-[inset_0_0_88px_rgba(255,255,255,0.12)]'
 
-function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
-  const animationClass = isInViewport
-    ? 'animate-scale-once tablet:animate-none'
-    : ''
+/** Overlay that renders the hover glow above a full-bleed image, where the container's own inset shadow would be hidden. */
+const thumbHoverGlowOverlay =
+  'pointer-events-none absolute inset-0 z-10 rounded-2xl transition-shadow duration-300 ease-out group-hover:shadow-[inset_0_0_88px_rgba(255,255,255,0.12)]'
+
+function Thumbnail({ project }: ThumbnailProps) {
   const aspectClass =
     project.section === 'work'
       ? 'aspect-square tablet:aspect-800/520'
@@ -49,16 +49,17 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Talking Fingers') {
     return (
       <div
-        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#e5ecf7] ${thumbFrameHoverGlow}`}
+        className={`relative flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#e5ecf7]`}
       >
         <picture>
           <source media='(max-width: 767px)' srcSet={TF.src} />
           <img
             src={TFLandscape.src}
             alt='Talking Fingers'
-            className={`${thumbImgShadow} h-auto w-full rounded-2xl ${animationClass}`}
+            className={`${thumbImgShadow} h-auto w-full rounded-2xl`}
           />
         </picture>
+        <div className={thumbHoverGlowOverlay} aria-hidden />
       </div>
     )
   }
@@ -66,16 +67,17 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'Stanley') {
     return (
       <div
-        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#eae8f8] ${thumbFrameHoverGlow}`}
+        className={`relative flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#eae8f8]`}
       >
         <picture>
           <source media='(max-width: 767px)' srcSet={StanleySquare.src} />
           <img
             src={Stanley.src}
             alt='Stanley'
-            className={`${thumbImgShadow} h-auto w-full rounded-2xl ${animationClass}`}
+            className={`${thumbImgShadow} h-auto w-full rounded-2xl`}
           />
         </picture>
+        <div className={thumbHoverGlowOverlay} aria-hidden />
       </div>
     )
   }
@@ -88,7 +90,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={RMS.src}
           alt='Robot Management System'
-          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
+          className={`${thumbImgShadow} h-auto w-full`}
         />
       </div>
     )
@@ -97,13 +99,17 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'CheckIn') {
     return (
       <div
-        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#452f21] ${thumbFrameHoverGlow}`}
+        className={`relative flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#452f21]`}
       >
-        <img
-          src={CheckIn.src}
-          alt='CheckIn'
-          className={`${thumbImgShadow} h-auto w-full rounded-2xl ${animationClass}`}
-        />
+        <picture>
+          <source media='(max-width: 767px)' srcSet={CheckInSquare.src} />
+          <img
+            src={CheckIn.src}
+            alt='CheckIn'
+            className={`${thumbImgShadow} h-auto w-full rounded-2xl`}
+          />
+        </picture>
+        <div className={thumbHoverGlowOverlay} aria-hidden />
       </div>
     )
   }
@@ -116,7 +122,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Stylistic.src}
           alt='Stylistic'
-          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain ${animationClass}`}
+          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain`}
         />
       </div>
     )
@@ -130,7 +136,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Soar.src}
           alt='Soar'
-          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain ${animationClass}`}
+          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain`}
         />
       </div>
     )
@@ -144,7 +150,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Tmp.src}
           alt='/tmp'
-          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
+          className={`${thumbImgShadow} h-auto w-full`}
         />
       </div>
     )
@@ -158,7 +164,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Gravity.src}
           alt='Gravity Visualizer'
-          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
+          className={`${thumbImgShadow} h-auto w-full`}
         />
       </div>
     )
@@ -172,7 +178,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Autonomous.src}
           alt='Autonomous Car'
-          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
+          className={`${thumbImgShadow} h-auto w-full`}
         />
       </div>
     )
@@ -186,7 +192,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Robotech.src}
           alt='Resistor Sorter'
-          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
+          className={`${thumbImgShadow} h-auto w-full`}
         />
       </div>
     )
@@ -200,7 +206,7 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
         <img
           src={Allrecipes.src}
           alt='Allrecipes'
-          className={`${thumbImgShadow} h-auto w-full ${animationClass}`}
+          className={`${thumbImgShadow} h-auto w-full`}
         />
       </div>
     )
@@ -243,7 +249,7 @@ export const projects: Project[] = [
     detail: 'Concept 2026',
     thumbnail: 'https://via.placeholder.com/150',
     caption:
-      'Creators juggle their ideas, calendars, and publishing across a dozen disconnected tools. {{Stanley}} is a product by {{Stan}} that reimagines this as a single {{Content OS}}—where {{planning}}, {{creating}}, and {{shipping}} all live in one place. I helped do some of the {{concept design}}, exploring how creators could run their entire {{content workflow}} from one home.',
+      'Creators juggle their ideas, calendars, and publishing across a dozen disconnected tools. {{Stanley}} is a product by {{Stan}} that reimagines this as a single {{Content OS}}—where {{planning}}, {{creating}}, and {{shipping}} all live in one place. Working {{directly with the CTO}}, I helped do some of the {{concept design}}, exploring how creators could run their entire {{content workflow}} from one home.',
     devSkills: [],
     designSkills: ['Figma', 'Concept Design', 'Product Design', 'Prototyping'],
     highlights: [
@@ -429,24 +435,12 @@ const playgroundProjects = projects.filter(p => p.section === 'playground')
 interface ProjectCardProps {
   project: Project
   onClick: () => void
-  isCentered?: boolean
 }
 
-function ProjectCard({
-  project,
-  onClick,
-  isCentered = false
-}: ProjectCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null)
-
+function ProjectCard({ project, onClick }: ProjectCardProps) {
   return (
-    <div
-      ref={cardRef}
-      className='group flex cursor-pointer flex-col gap-3'
-      onClick={onClick}
-      data-card-index={project.title}
-    >
-      <Thumbnail project={project} isInViewport={isCentered} />
+    <div className='group flex cursor-pointer flex-col gap-3' onClick={onClick}>
+      <Thumbnail project={project} />
       <div className='flex flex-col gap-1'>
         <div className='font-secondary text-white'>{project.description}</div>
         <div className='font-tertiary text-neutral-400 uppercase'>
@@ -462,75 +456,6 @@ interface ProjectsProps {
 }
 
 export default function Projects({ onSelectProject }: ProjectsProps) {
-  const [animatingProject, setAnimatingProject] = useState<string | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const previousCenterState = useRef<Map<string, boolean>>(new Map())
-  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  useEffect(() => {
-    const findCenteredCard = () => {
-      // Only run when grid is single column (container width < 560px, i.e., 2 * 280px min-width)
-      if (window.innerWidth >= 560) {
-        setAnimatingProject(null)
-        return
-      }
-
-      if (!containerRef.current) return
-
-      const cards = containerRef.current.querySelectorAll('[data-card-index]')
-      const viewportCenter = window.innerHeight / 2
-      const currentCenterState = new Map<string, boolean>()
-
-      cards.forEach(card => {
-        if (!(card instanceof HTMLElement)) return
-
-        const projectTitle = card.getAttribute('data-card-index')
-        if (!projectTitle) return
-
-        const rect = card.getBoundingClientRect()
-        const cardCenter = rect.top + rect.height / 2
-
-        // Check if card is in the center zone (within 100px of center)
-        const distance = Math.abs(cardCenter - viewportCenter)
-        const isInCenterZone = distance < 100
-
-        const wasInCenter =
-          previousCenterState.current.get(projectTitle) || false
-        currentCenterState.set(projectTitle, isInCenterZone)
-
-        // Trigger animation if card just crossed into center (entering the center zone)
-        if (isInCenterZone && !wasInCenter) {
-          // Clear any existing timeout
-          if (animationTimeoutRef.current) {
-            clearTimeout(animationTimeoutRef.current)
-          }
-
-          setAnimatingProject(projectTitle)
-
-          // Reset after animation completes (300ms duration)
-          animationTimeoutRef.current = setTimeout(() => {
-            setAnimatingProject(null)
-          }, 300)
-        }
-      })
-
-      previousCenterState.current = currentCenterState
-    }
-
-    // Check on scroll and initial load
-    findCenteredCard()
-    window.addEventListener('scroll', findCenteredCard, { passive: true })
-    window.addEventListener('resize', findCenteredCard)
-
-    return () => {
-      window.removeEventListener('scroll', findCenteredCard)
-      window.removeEventListener('resize', findCenteredCard)
-      if (animationTimeoutRef.current) {
-        clearTimeout(animationTimeoutRef.current)
-      }
-    }
-  }, [])
-
   const workGridClass = 'grid grid-cols-1 tablet:grid-cols-2 gap-6'
   const playgroundGridClass =
     'grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'
@@ -539,7 +464,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
   const sectionTitleBarStackClass = 'flex flex-col gap-[14px]'
 
   return (
-    <div ref={containerRef} className='tablet:gap-16 flex flex-col gap-6'>
+    <div className='tablet:gap-16 flex flex-col gap-6'>
       <section id='work' className='flex scroll-mt-28 flex-col gap-4'>
         <div className={sectionTitleBarStackClass}>
           <h2 className={sectionTitleClass}>WORK</h2>
@@ -551,7 +476,6 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
               key={project.title}
               project={project}
               onClick={() => onSelectProject(project)}
-              isCentered={animatingProject === project.title}
             />
           ))}
         </div>
@@ -567,7 +491,6 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
               key={project.title}
               project={project}
               onClick={() => onSelectProject(project)}
-              isCentered={animatingProject === project.title}
             />
           ))}
         </div>
