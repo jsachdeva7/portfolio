@@ -81,7 +81,7 @@ const thumbnailConfig: Record<
     style: 'full'
   },
   'Allrecipes.com': {
-    bg: 'bg-[#FFB199]',
+    bg: 'bg-[#964D36]',
     src: Allrecipes.src,
     alt: 'Allrecipes',
     style: 'full'
@@ -134,7 +134,7 @@ export default function ProjectArticleHeader({
       <ArticleThumbnail title={title} />
 
       {/* Caption */}
-      <div className='font-secondary tablet:mb-14 tablet:text-lg mb-8 text-base leading-relaxed text-neutral-400'>
+      <div className='font-secondary tablet:mb-14 tablet:text-md mb-8 text-base leading-relaxed text-neutral-400'>
         {renderHighlightedText(caption)}
       </div>
 
