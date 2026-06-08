@@ -4,6 +4,7 @@ import Gravity from './assets/Gravity.svg'
 import RMS from './assets/RMS.svg'
 import Robotech from './assets/Robotech.svg'
 import Soar from './assets/Soar.png'
+import Stanley from './assets/Stanley.png'
 import Stylistic from './assets/Stylistic.png'
 import Tmp from './assets/Tmp.svg'
 import Allrecipes from './assets/Allrecipes.svg'
@@ -42,6 +43,12 @@ const thumbnailConfig: Record<
     alt: 'Talking Fingers',
     style: 'full'
   },
+  Stanley: {
+    bg: 'bg-[#eae8f8]',
+    src: Stanley.src,
+    alt: 'Stanley',
+    style: 'full'
+  },
   Roboligent: {
     bg: 'bg-[#0b2e5b]',
     src: RMS.src,
@@ -52,7 +59,7 @@ const thumbnailConfig: Record<
     bg: 'bg-[#452f21]',
     src: CheckIn.src,
     alt: 'CheckIn',
-    style: 'padded'
+    style: 'full'
   },
   Stylistic: {
     bg: 'bg-[#1c4a34]',

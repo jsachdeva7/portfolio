@@ -5,6 +5,8 @@ import Gravity from './assets/Gravity.svg'
 import RMS from './assets/RMS.svg'
 import Robotech from './assets/Robotech.svg'
 import Soar from './assets/Soar.png'
+import Stanley from './assets/Stanley.png'
+import StanleySquare from './assets/StanleySquare.png'
 import Stylistic from './assets/Stylistic.png'
 import Tmp from './assets/Tmp.svg'
 import Allrecipes from './assets/Allrecipes.svg'
@@ -61,6 +63,23 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
     )
   }
 
+  if (project.title === 'Stanley') {
+    return (
+      <div
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#eae8f8] ${thumbFrameHoverGlow}`}
+      >
+        <picture>
+          <source media='(max-width: 767px)' srcSet={StanleySquare.src} />
+          <img
+            src={Stanley.src}
+            alt='Stanley'
+            className={`${thumbImgShadow} h-auto w-full rounded-2xl ${animationClass}`}
+          />
+        </picture>
+      </div>
+    )
+  }
+
   if (project.title === 'Roboligent') {
     return (
       <div
@@ -78,12 +97,12 @@ function Thumbnail({ project, isInViewport = false }: ThumbnailProps) {
   if (project.title === 'CheckIn') {
     return (
       <div
-        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-3xl bg-[#452f21] p-6 ${thumbFrameHoverGlow}`}
+        className={`flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#452f21] ${thumbFrameHoverGlow}`}
       >
         <img
           src={CheckIn.src}
           alt='CheckIn'
-          className={`${thumbImgShadow} h-full w-auto max-w-full object-contain ${animationClass}`}
+          className={`${thumbImgShadow} h-auto w-full rounded-2xl ${animationClass}`}
         />
       </div>
     )
@@ -219,6 +238,22 @@ export const projects: Project[] = [
     section: 'work'
   },
   {
+    title: 'Stanley',
+    description: 'A full AI Content OS for creators',
+    detail: 'Concept 2026',
+    thumbnail: 'https://via.placeholder.com/150',
+    caption:
+      'Creators juggle their ideas, calendars, and publishing across a dozen disconnected tools. {{Stanley}} is a product by {{Stan}} that reimagines this as a single {{Content OS}}—where {{planning}}, {{creating}}, and {{shipping}} all live in one place. I helped do some of the {{concept design}}, exploring how creators could run their entire {{content workflow}} from one home.',
+    devSkills: [],
+    designSkills: ['Figma', 'Concept Design', 'Product Design', 'Prototyping'],
+    highlights: [
+      'A unified {{Content Calendar}} spanning {{drafts}}, {{scheduled}}, and {{published}} posts',
+      'A {{Compose}} workspace that turns {{ideas}} into {{ready-to-ship content}}',
+      '{{Insights}} and {{rituals}} that keep creators {{proactive}}, not reactive'
+    ],
+    section: 'work'
+  },
+  {
     title: 'CheckIn',
     description: 'A better way to keep in touch',
     detail: 'Shipping soon',
@@ -286,12 +321,12 @@ export const projects: Project[] = [
       '{{10+ paying customers}} saving ~{{2 hours per week}} on content creation',
       '{{100+}} customer discovery and product testing {{interviews}}'
     ],
-    section: 'work'
+    section: 'playground'
   },
   {
     title: 'Allrecipes.com',
     description: 'Apply recipe tweaks like code diffs',
-    detail: 'Figma Concept',
+    detail: 'Concept 2026',
     thumbnail: 'https://via.placeholder.com/150',
     caption:
       'On Allrecipes, the best tips are buried in the reviews, disconnected from the recipe itself. This {{Figma concept}} reimagines that: apply a popular {{tweak}} and see it as a {{diff}} against the original recipe, then {{accept the changes}} you want with a tap.',
@@ -504,7 +539,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
   const sectionTitleBarStackClass = 'flex flex-col gap-[14px]'
 
   return (
-    <div ref={containerRef} className='flex flex-col gap-12'>
+    <div ref={containerRef} className='tablet:gap-16 flex flex-col gap-6'>
       <section id='work' className='flex scroll-mt-28 flex-col gap-4'>
         <div className={sectionTitleBarStackClass}>
           <h2 className={sectionTitleClass}>WORK</h2>
@@ -523,7 +558,7 @@ export default function Projects({ onSelectProject }: ProjectsProps) {
       </section>
       <section id='play' className='flex scroll-mt-28 flex-col gap-4'>
         <div className={sectionTitleBarStackClass}>
-          <h2 className={sectionTitleClass}>PLAY</h2>
+          <h2 className={`${sectionTitleClass} text-left`}>PLAY</h2>
           <div className='h-px w-full shrink-0 bg-neutral-600/50' aria-hidden />
         </div>
         <div className={playgroundGridClass}>
