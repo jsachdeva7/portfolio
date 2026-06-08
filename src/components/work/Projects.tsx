@@ -198,7 +198,7 @@ export const projects: Project[] = [
   {
     title: 'Talking Fingers',
     description: 'Intentionally learn sign language',
-    detail: 'shipping soon',
+    detail: 'Shipped 2026',
     thumbnail: 'https://via.placeholder.com/150',
     caption:
       "Sign language apps show you a clip to copy, then leave you guessing whether you got it right. {{Talking Fingers}} is a {{mobile app}} I built with GT iOS Club that uses {{computer vision}} to {{recognize your signs in real time}}, showing you exactly {{what you're getting right}}—and what to fix—as you go.",
@@ -294,7 +294,7 @@ export const projects: Project[] = [
     detail: 'Figma Concept',
     thumbnail: 'https://via.placeholder.com/150',
     caption:
-      "On Allrecipes, the best tips are buried in the reviews, disconnected from the recipe itself. This {{Figma concept}} reimagines that: apply a popular {{tweak}} and see it as a {{diff}} against the original recipe, then {{accept the changes}} you want with a tap.",
+      'On Allrecipes, the best tips are buried in the reviews, disconnected from the recipe itself. This {{Figma concept}} reimagines that: apply a popular {{tweak}} and see it as a {{diff}} against the original recipe, then {{accept the changes}} you want with a tap.',
     devSkills: [],
     designSkills: ['Figma', 'Low Fidelity Prototyping', 'Rapid Prototyping'],
     highlights: [
