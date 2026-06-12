@@ -5,7 +5,6 @@ import Gravity from './assets/Gravity.svg'
 import RMS from './assets/RMS.svg'
 import Robotech from './assets/Robotech.svg'
 import Soar from './assets/Soar.png'
-import Stanley from './assets/Stanley.png'
 import StanleySquare from './assets/StanleySquare.png'
 import Stylistic from './assets/Stylistic.png'
 import Tmp from './assets/Tmp.svg'
@@ -69,14 +68,11 @@ function Thumbnail({ project }: ThumbnailProps) {
       <div
         className={`relative flex ${aspectClass} w-full items-center justify-center overflow-hidden rounded-2xl bg-[#eae8f8]`}
       >
-        <picture>
-          <source media='(max-width: 767px)' srcSet={StanleySquare.src} />
-          <img
-            src={Stanley.src}
-            alt='Stanley'
-            className={`${thumbImgShadow} h-auto w-full rounded-2xl`}
-          />
-        </picture>
+        <img
+          src={StanleySquare.src}
+          alt='Stanley'
+          className={`${thumbImgShadow} h-auto w-full rounded-2xl`}
+        />
         <div className={thumbHoverGlowOverlay} aria-hidden />
       </div>
     )
@@ -244,22 +240,6 @@ export const projects: Project[] = [
     section: 'work'
   },
   {
-    title: 'Stanley',
-    description: 'A full AI Content OS for creators',
-    detail: 'Concept 2026',
-    thumbnail: 'https://via.placeholder.com/150',
-    caption:
-      'Creators juggle their ideas, calendars, and publishing across a dozen disconnected tools. {{Stanley}} is a product by {{Stan}} that reimagines this as a single {{Content OS}}—where {{planning}}, {{creating}}, and {{shipping}} all live in one place. Working {{directly with the CTO}}, I helped do some of the {{concept design}}, exploring how creators could run their entire {{content workflow}} from one home.',
-    devSkills: [],
-    designSkills: ['Figma', 'Concept Design', 'Product Design', 'Prototyping'],
-    highlights: [
-      'A unified {{Content Calendar}} spanning {{drafts}}, {{scheduled}}, and {{published}} posts',
-      'A {{Compose}} workspace that turns {{ideas}} into {{ready-to-ship content}}',
-      '{{Insights}} and {{rituals}} that keep creators {{proactive}}, not reactive'
-    ],
-    section: 'work'
-  },
-  {
     title: 'CheckIn',
     description: 'A better way to keep in touch',
     detail: 'Shipping soon',
@@ -326,6 +306,22 @@ export const projects: Project[] = [
       'Seamless workflow for {{creating captions}}, {{building posts}}, and {{sharing to Instagram}}',
       '{{10+ paying customers}} saving ~{{2 hours per week}} on content creation',
       '{{100+}} customer discovery and product testing {{interviews}}'
+    ],
+    section: 'work'
+  },
+  {
+    title: 'Stanley',
+    description: 'A full AI Content OS for creators',
+    detail: 'Concept 2026',
+    thumbnail: 'https://via.placeholder.com/150',
+    caption:
+      'Creators juggle their ideas, calendars, and publishing across a dozen disconnected tools. {{Stanley}} is a product by {{Stan}} that reimagines this as a single {{Content OS}}—where {{planning}}, {{creating}}, and {{shipping}} all live in one place. Working {{directly with the CTO}}, I helped do some of the {{concept design}}, exploring how creators could run their entire {{content workflow}} from one home.',
+    devSkills: [],
+    designSkills: ['Figma', 'Concept Design', 'Product Design', 'Prototyping'],
+    highlights: [
+      'A unified {{Content Calendar}} spanning {{drafts}}, {{scheduled}}, and {{published}} posts',
+      'A {{Compose}} workspace that turns {{ideas}} into {{ready-to-ship content}}',
+      '{{Insights}} and {{rituals}} that keep creators {{proactive}}, not reactive'
     ],
     section: 'playground'
   },
